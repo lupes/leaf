@@ -12,15 +12,15 @@ import (
 )
 
 const (
-	selectProblem      = "select id, title, content, created_time, updated_time from problem where deleted_time is null order by id limit ?, ?"
+	selectProblem      = "select id, title, url, content, created_time, updated_time from problem where deleted_time is null order by id limit ?, ?"
 	selectProblemCount = "select count(*) from problem where deleted_time is null"
-	selectProblemById  = "select id, title, content, created_time, updated_time from problem where id = ? and deleted_time is null"
-	insertProblem      = "insert into problem(title, content, created_time, updated_time) values (?, ?, ?, ?)"
-	updateProblem      = "update problem set title=?, content=?, updated_time = ? where id = ? and deleted_time is null"
+	selectProblemById  = "select id, title, url, content, created_time, updated_time from problem where id = ? and deleted_time is null"
+	insertProblem      = "insert into problem(title, url, content, created_time, updated_time) values (?, ?, ?, ?, ?)"
+	updateProblem      = "update problem set title=?, url=?, content=?, updated_time = ? where id = ? and deleted_time is null"
 	deleteProblem      = "update problem set deleted_time = ? where id = ? and deleted_time is null"
 )
 
-func Problems(ctx context.Context, limit, offset int64) ([]common.Problem, error) {
+func Problems(ctx context.Context, limit, offset int64) (common.Problems, error) {
 	db := database.GetDB()
 	rows, err := db.QueryContext(ctx, selectProblem, offset, limit)
 	if err != nil {
@@ -32,10 +32,10 @@ func Problems(ctx context.Context, limit, offset int64) ([]common.Problem, error
 			logrus.Errorf("close rows error:%s", err)
 		}
 	}()
-	var problems []common.Problem
+	var problems common.Problems
 	for rows.Next() {
 		problem := common.Problem{}
-		err := rows.Scan(&problem.Id, &problem.Title, &problem.Content, &problem.CreatedTime, &problem.UpdatedTime)
+		err := rows.Scan(&problem.Id, &problem.Title, &problem.Url, &problem.Content, &problem.CreatedTime, &problem.UpdatedTime)
 		if err != nil {
 			return nil, fmt.Errorf("query problem err:%w", err)
 		}
@@ -57,16 +57,16 @@ func ProblemCount(ctx context.Context) (int, error) {
 func Problem(ctx context.Context, problemId int) (common.Problem, error) {
 	var problem common.Problem
 	row := database.GetDB().QueryRowContext(ctx, selectProblemById, problemId)
-	err := row.Scan(&problem.Id, &problem.Title, &problem.Content, &problem.CreatedTime, &problem.UpdatedTime)
+	err := row.Scan(&problem.Id, &problem.Title, &problem.Url, &problem.Content, &problem.CreatedTime, &problem.UpdatedTime)
 	if err != nil {
 		return problem, fmt.Errorf("scan problem err:%w", err)
 	}
 	return problem, nil
 }
 
-func InsertProblem(ctx context.Context, title, content string) (int64, error) {
+func InsertProblem(ctx context.Context, title, url, content string) (int64, error) {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, insertProblem, title, content, time.Now(), time.Now())
+	res, err := db.ExecContext(ctx, insertProblem, title, url, content, time.Now(), time.Now())
 	if err != nil {
 		return 0, fmt.Errorf("insert to db err:%w", err)
 	}
@@ -84,9 +84,9 @@ func InsertProblem(ctx context.Context, title, content string) (int64, error) {
 	return id, nil
 }
 
-func UpdateProblem(ctx context.Context, problemId int64, title, content string) error {
+func UpdateProblem(ctx context.Context, problemId int64, title, url, content string) error {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, updateProblem, title, content, time.Now(), problemId)
+	res, err := db.ExecContext(ctx, updateProblem, title, url, content, time.Now(), problemId)
 	if err != nil {
 		return fmt.Errorf("update problem err:%w", err)
 	}

@@ -1,13 +1,7 @@
 <template>
-  <a-row :gutter="16">
-    <a-col :span="6"/>
-    <a-col :span="12">
-      <div class="ace-container">
+    <div class="ace-container">
         <div class="ace-editor" ref="ace"></div>
-      </div>
-    </a-col>
-    <a-col :span="6"></a-col>
-  </a-row>
+    </div>
 </template>
 
 <script>
@@ -20,9 +14,17 @@
   import 'ace-builds/src-noconflict/ext-language_tools'
 
   export default {
+    name: "Ace",
     props: {
       value: String,
       readOnly: Boolean,
+    },
+    data() {
+      return {
+        aceEditor: null,
+        theme: 'ace/theme/solarized_light',
+        mode: 'ace/mode/golang'
+      }
     },
     mounted() {
       this.aceEditor = ace.edit(this.$refs.ace, {
@@ -38,16 +40,13 @@
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: true
       });
-      this.aceEditor.getSession().on("change", this.change)
+      this.aceEditor.getSession().on("change", this.change);
     },
-    data() {
-      return {
-        aceEditor: null,
-        theme: 'ace/theme/solarized_light',
-        mode: 'ace/mode/golang'
+    watch: {
+      value: function (value) {
+        this.aceEditor.getSession().setValue(value)
       }
     },
-    name: "Ace",
     methods: {
       change() {
         this.$emit('input', this.aceEditor.getSession().getValue());
@@ -57,7 +56,7 @@
 </script>
 
 <style lang='css' scoped>
-  .scrollmargin {
-    height: 80px;
-  }
+    .scrollmargin {
+        height: 80px;
+    }
 </style>

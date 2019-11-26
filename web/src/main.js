@@ -3,19 +3,38 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import {Button, Col, List, Row} from 'ant-design-vue';
+import {Layout, Menu, Modal, Input,Button, Col, List, Row, message} from 'ant-design-vue';
 import ace from 'ace-builds'
 import componentsInstall from './components/install'
+import moment from "moment";
 
 Vue.use(ace);
 Vue.use(componentsInstall);
+Vue.component(Layout.name, Layout);
+Vue.component(Layout.Header.name, Layout.Header);
+Vue.component(Layout.Sider.name, Layout.Sider);
+Vue.component(Layout.Content.name, Layout.Content);
+Vue.component(Layout.Footer.name, Layout.Footer);
+Vue.component(Menu.name, Menu);
+Vue.component(Menu.Item.name, Menu.Item);
+Vue.component(Modal.name, Modal);
+Vue.component(Input.name, Input);
+Vue.component(Input.TextArea.name, Input.TextArea);
 Vue.component(Button.name, Button);
 Vue.component(Row.name, Row);
 Vue.component(Col.name, Col);
 Vue.component(List.name, List);
 Vue.component(List.Item.name, List.Item);
 Vue.component(List.Item.Meta.name, List.Item.Meta);
+Vue.prototype.$message = message;
 Vue.config.productionTip = false;
+
+Vue.filter('datetime', function (value) {
+  if(value !== "") {
+    return moment(value).format('YYYY-MM-DD HH:mm:ss')
+  }
+  return ""
+});
 
 new Vue({
   router,

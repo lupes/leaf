@@ -1,22 +1,26 @@
 <template>
-    <div>
-        <a-row>
+    <a-layout id="components-layout-demo-top" class="layout">
+        <a-layout-header class="">
+            <div class="logo" />
             <div id="app">
-                <div id="nav">
-                    <router-link to="/">Home</router-link>
+                <div id="nav" class="ant-menu ant-menu-horizontal ant-menu-root ant-menu-dark">
+                    <router-link class="ant-menu-item" to="/">Home</router-link>
                     |
-                    <router-link to="/Problem">Problem</router-link>
+                    <router-link class="ant-menu-item" to="/Problems">Problems</router-link>
                     |
-                    <router-link to="/Ace">Ace</router-link>
+                    <router-link class="ant-menu-item" to="/Ace">Ace</router-link>
                     |
-                    <router-link to="/About">About</router-link>
+                    <router-link class="ant-menu-item" to="/About">About</router-link>
                 </div>
             </div>
-        </a-row>
-        <a-row :gutter="8">
-            <router-view/>
-        </a-row>
-    </div>
+        </a-layout-header>
+        <a-layout-content style="padding: 0 50px">
+            <router-view :style="{ background: '#fff', padding: '24px', minHeight: '280px' }"/>
+        </a-layout-content>
+        <a-layout-footer style="text-align: center">
+           Leaf ©2019 Created by Leaf
+        </a-layout-footer>
+    </a-layout>
 </template>
 
 <style lang="scss">
@@ -29,16 +33,16 @@
     }
 
     #nav {
-        padding: 30px;
+        padding: 20px;
 
-    a {
-        font-weight: bold;
-        color: #2c3e50;
+        a {
+            font-weight: bold;
+            color: #FFFFFF;
 
-    &.router-link-exact-active {
-        color: #42b983;
-    }
+            &.router-link-exact-active {
+                color: #42b983;
+            }
 
-    }
+        }
     }
 </style>

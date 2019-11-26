@@ -1,20 +1,31 @@
 <template>
     <div>
         <a-row>
-            <a-col :offset="19" :span="2">
-                <a-button>Add</a-button>
+            <a-col :offset="19" :span="3">
+                <a-button type="primary" href="/solution/add">添加题解</a-button>
+            </a-col>
+        </a-row>
+        <a-row style="margin: 20px 0;">
+            <a-col :offset="2" :span="2">
+                <span>{{ problem.title }} </span>
+            </a-col>
+            <a-col :offset="13" :span="5" >
+                <span>{{ problem.created_time | datetime }} </span>
             </a-col>
         </a-row>
         <a-row>
-            <a-col :offset="4" :span="16">
-                <a-list class="demo-loadmore-list" itemLayout="horizontal" :pagination="pagination"
-                        :dataSource="problems">
+            <a-col :offset="2" :span="20">
+                <p>{{ problem.content }}</p>
+            </a-col>
+        </a-row>
+        <a-row>
+            <a-col :offset="2" :span="20">
+                <a-list class="" itemLayout="horizontal" :pagination="pagination"
+                        :dataSource="solutions">
                     <a-list-item slot="renderItem" slot-scope="item">
-                        <a slot="actions" :href="'/problem/'+item.id">{{ item.title }}</a>
-                        <a slot="actions">Edit</a>
-                        <a slot="actions">Detail</a>
-                        <a slot="actions">Solutions</a>
-                        <a-list-item-meta :description="item.content" />
+                        <span>{{ item.title }}</span>
+                        <a slot="actions" :href="'/solution/edit/'+item.id">编辑</a>
+                        <a slot="actions" :href="'/solution/detail/'+item.id">详情</a>
                     </a-list-item>
                 </a-list>
             </a-col>
@@ -26,11 +37,11 @@
   import axios from "axios"
 
   export default {
-    name: "problems",
+    name: "Problem",
     data() {
       return {
-        problems: [],
-        msg: "",
+        problem: {},
+        solutions: [],
         pageSize: 10,
         pagination: {
           onChange: page => {
@@ -39,43 +50,43 @@
               this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
             });
           },
-          total:2,
+          total: 0,
           pageSize: 10,
         },
       };
     },
     mounted() {
-      this.getData(0, res => {
-        console.log(res.data.data);
-        this.pagination.total = res.data.data.count;
-        this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+      this.getProblem(this.$route.params.id, res => {
+        this.problem = res.data.data
       });
+      this.getSolutions(0, this.$route.params.id, res => {
+        this.pagination.total = res.data.data.count;
+        this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
+      })
     },
     methods: {
-      getData(offset, callback) {
+      getProblem(problem_id, callback) {
         let app = this;
-        axios.get("http://localhost/api/v1/problem", {
-          params: {limit: app.pageSize, offset: offset}
-        }).then(callback)
+        axios.get("http://localhost/api/v1/problem/" + problem_id)
+          .then(callback)
           .catch(function (error) {
-            console.log('Error! Could not reach the API. ' + error)
-            app.msg = 'Error! Could not reach the API. ' + error
+            app.$message.error("请求失败 " + error);
+          })
+      },
+      getSolutions(offset, problem_id, callback) {
+        let app = this;
+        axios.get("http://localhost/api/v1/solution", {
+          params: {problem_id: problem_id, limit: this.pageSize, offset: offset}
+        })
+          .then(callback)
+          .catch(function (error) {
+            app.$message.error("请求失败 " + error);
           })
       },
     },
   };
 </script>
-<style>
-    .demo-loadmore-list {
-        min-height: 350px;
-        text-align: center;
-    }
 
-    .home {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+<style scoped>
 
-        color: #2c3e50;
-    }
 </style>

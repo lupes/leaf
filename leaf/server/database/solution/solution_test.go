@@ -42,11 +42,13 @@ func TestSolution(t *testing.T) {
 }
 
 func TestInsertSolution(t *testing.T) {
+	title := "Hello World"
+	language := "golang"
 	content := `func main() {
 
 }`
 	caption := "这是一个示例"
-	got, err := InsertSolution(ctx, 2, "golang", content, caption)
+	got, err := InsertSolution(ctx, 2, title, language, content, caption)
 	if err != nil {
 		t.Errorf("InsertSolution() error = %v", err)
 		return
@@ -55,11 +57,14 @@ func TestInsertSolution(t *testing.T) {
 }
 
 func TestUpdateSolution(t *testing.T) {
+	title := "Hello World"
+	language := "golang"
 	content := `func main() {
 	fmt.Println("Hello World")
 }`
 	caption := "这是一个示例"
-	err := UpdateSolution(ctx, 2, content, caption)
+
+	err := UpdateSolution(ctx, 2, title, language, content, caption)
 	if err != nil {
 		t.Errorf("UpdateSolution() error = %v", err)
 	}

@@ -24,7 +24,7 @@ func getInt64Param(req *http.Request, key string) (int64, error) {
 }
 
 func List(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
-	problemId, err := getInt64Param(req, "limit")
+	problemId, err := getInt64Param(req, "problem_id")
 	if err != nil {
 		return 400, nil, fmt.Errorf("get query param err:%w", err)
 	}
@@ -49,7 +49,7 @@ func List(w http.ResponseWriter, req *http.Request, params httprouter.Params) (i
 }
 
 func Get(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
-	value := req.FormValue("id")
+	value := params.ByName("id")
 	solutionId, err := strconv.Atoi(value)
 	if err != nil {
 		return 400, nil, fmt.Errorf("param solution_id[%s] to int err:%w", value, err)
@@ -64,6 +64,7 @@ func Get(w http.ResponseWriter, req *http.Request, params httprouter.Params) (in
 func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
 	data := struct {
 		ProblemId int64  `json:"problem_id"`
+		Title     string `json:"title"`
 		Language  string `json:"language"`
 		Content   string `json:"content"`
 		Caption   string `json:"caption"`
@@ -72,7 +73,7 @@ func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	_, err = solution.InsertSolution(req.Context(), data.ProblemId, data.Language, data.Content, data.Caption)
+	_, err = solution.InsertSolution(req.Context(), data.ProblemId, data.Title, data.Language, data.Content, data.Caption)
 	if err != nil {
 		return 400, nil, fmt.Errorf("insert solution err:%w", err)
 	}
@@ -82,6 +83,7 @@ func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
 	data := struct {
 		SolutionId int64  `json:"solution_id"`
+		Title      string `json:"title"`
 		Language   string `json:"language"`
 		Content    string `json:"content"`
 		Caption    string `json:"caption"`
@@ -90,7 +92,7 @@ func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	err = solution.UpdateSolution(req.Context(), data.SolutionId, data.Language, data.Content, data.Caption)
+	err = solution.UpdateSolution(req.Context(), data.SolutionId, data.Title, data.Language, data.Content, data.Caption)
 	if err != nil {
 		return 400, nil, fmt.Errorf("update solution by id[%d] err:%w", data.SolutionId, err)
 	}
