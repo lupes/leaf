@@ -15,7 +15,7 @@ const (
 	selectProblem      = "select id, title, url, topics, difficulty, content, created_time, updated_time from problem where deleted_time is null order by id limit ?, ?"
 	selectProblemCount = "select count(*) from problem where deleted_time is null"
 	selectProblemById  = "select id, title, url, topics, difficulty, content, created_time, updated_time from problem where id = ? and deleted_time is null"
-	insertProblem      = "insert into problem(title, url, topics, difficulty, content, created_time, updated_time) values (?, ?, ?, ?, ?, ?)"
+	insertProblem      = "insert into problem(title, url, topics, difficulty, content, created_time, updated_time) values (?, ?, ?, ?, ?, ?, ?)"
 	updateProblem      = "update problem set title=?, url=?, topics=?, difficulty=?, content=?, updated_time = ? where id = ? and deleted_time is null"
 	deleteProblem      = "update problem set deleted_time = ? where id = ? and deleted_time is null"
 )

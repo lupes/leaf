@@ -1,7 +1,21 @@
 <template>
     <div>
         <a-row>
-            <a-col :offset="19" :span="2">
+            <a-col :offset="11" :span="4">
+                <a-button type="primary" @click="()=> this.open = true">添加Leetcode题目</a-button>
+                <a-modal
+                        title="添加Leetcode题目"
+                        cancelText="取消"
+                        okText="确认"
+                        centered
+                        :closable="false"
+                        v-model="open"
+                        @ok="handleLeetcodeOk">
+                    <div style="margin: 10px 0"></div>
+                    <a-input placeholder="题目连接" v-model="url"/>
+                </a-modal>
+            </a-col>
+            <a-col :offset="2" :span="2">
                 <a-button type="primary" @click="showAddProblem">添加题目</a-button>
                 <problem-modal @ok="handlerOk"
                                @cancel="handlerCancel"
@@ -18,7 +32,7 @@
                 <a-list itemLayout="horizontal" :pagination="pagination"
                         :dataSource="problems">
                     <a-list-item slot="renderItem" slot-scope="item">
-                        <span style="margin-right: 10px; width: 100px; ">{{ item.title }}</span>
+                        <span style="margin-right: 10px; width: 350px; ">{{ item.title }}</span>
                         <span>{{ item.created_time | datetime }}</span>
                         <a slot="actions" @click="showEditProblem(item)">编辑</a>
                         <a slot="actions" :href="'/problem/'+item.id">详情</a>
@@ -38,6 +52,8 @@
     name: "Problems",
     data() {
       return {
+        open: false,
+        url: "",
         title: "",
         problem: {
           title: "",
@@ -68,6 +84,19 @@
       });
     },
     methods: {
+      handleLeetcodeOk() {
+        let app = this;
+        this.open = false;
+        if(app.url === "") {
+          app.$message.warn("content为空");
+        }
+        axios.post("http://localhost/api/v1/problem/url", {url: app.url}).then(function (res) {
+          app.$message.success("添加成功");
+          app.$router.push("/problem/" + res.data.data)
+        }).catch(function (error) {
+          app.$message.error("请求失败 " + error);
+        });
+      },
       closeProblem(f) {
         this.visible = f
       },
@@ -86,9 +115,7 @@
         this.visible = true;
       },
       showEditProblem(problem) {
-        this.problem.title = problem.title;
-        this.problem.url = problem.url;
-        this.problem.content = problem.content;
+        this.problem = problem;
         this.handlerOk = this.editProblem(problem.id);
         this.visible = true;
         this.title = "编辑题目";
@@ -105,16 +132,11 @@
         let app = this;
         this.visible = false;
         if(problem.content === "") {
-          console.warn(problem);
-          return
+          app.$message.warn("content为空");
         }
         axios.post("http://localhost/api/v1/problem", problem).then(function (res) {
           app.$message.success("添加成功");
-          app.$router.push("/problem/"+res.data.data)
-          // app.getProblems(app.pageSize * (app.page - 1), res => {
-          //   app.pagination.total = res.data.data.count;
-          //   app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-          // });
+          app.$router.push("/problem/" + res.data.data)
         }).catch(function (error) {
           app.$message.error("请求失败 " + error);
         });
