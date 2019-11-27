@@ -1,21 +1,30 @@
 <template>
     <div>
         <a-row>
-            <a-col :offset="4" :span="16">
+            <a-col :offset="2" :span="18">
+                <a-input placeholder="标题" v-model="solution.title"/>
+            </a-col>
+        </a-row>
+        <a-row style="margin: 10px"></a-row>
+        <a-row>
+            <a-col :offset="2" :span="18">
+                <a-textarea
+                        v-model="solution.caption"
+                        placeholder="解题思路"
+                        :autosize="{ minRows: 4, maxRows: 8 }"
+                />
+            </a-col>
+        </a-row>
+        <a-row style="margin: 10px"></a-row>
+        <a-row>
+            <a-col :offset="2" :span="18">
                 <ace v-bind:value="solution.content" v-bind:readOnly="readOnly" v-on:input="getValue"></ace>
             </a-col>
         </a-row>
-        <a-row type="flex">
-            <a-col>
-                <p class="height-50"></p>
-            </a-col>
-        </a-row>
+        <a-row style="margin: 10px"></a-row>
         <a-row>
             <a-col :offset="7" :span="2">
-                <a-button type="primary" v-on:click="test">Show</a-button>
-            </a-col>
-            <a-col :offset="7" :span="2">
-                <a-button type="primary">Submit</a-button>
+                <a-button type="primary" @click="addSolution">Submit</a-button>
             </a-col>
         </a-row>
     </div>

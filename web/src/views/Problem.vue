@@ -2,7 +2,7 @@
     <div>
         <a-row>
             <a-col :offset="19" :span="3">
-                <a-button type="primary" href="/solution/add">添加题解</a-button>
+                <a-button type="primary" :href="getAddSolutionUrl" >添加题解</a-button>
             </a-col>
         </a-row>
         <a-row style="margin: 20px 0;">
@@ -45,9 +45,10 @@
         pageSize: 10,
         pagination: {
           onChange: page => {
-            this.getData(this.pageSize * (page - 1), res => {
+            this.getSolutions(this.pageSize * (page - 1), this.$route.params.id, res => {
+              console.log(res);
               this.pagination.total = res.data.data.count;
-              this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+              this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
             });
           },
           total: 0,
@@ -64,6 +65,11 @@
         this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
       })
     },
+    computed: {
+      getAddSolutionUrl() {
+        return "/solution/add/" + this.$route.params.id
+      },
+    },
     methods: {
       getProblem(problem_id, callback) {
         let app = this;
@@ -77,8 +83,7 @@
         let app = this;
         axios.get("http://localhost/api/v1/solution", {
           params: {problem_id: problem_id, limit: this.pageSize, offset: offset}
-        })
-          .then(callback)
+        }).then(callback)
           .catch(function (error) {
             app.$message.error("请求失败 " + error);
           })

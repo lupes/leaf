@@ -59,6 +59,7 @@ func InitRoutes(router *httprouter.Router) {
 	router.GET("/api/v1/problem", toResponse(problem.List))
 	router.GET("/api/v1/problem/:id", toResponse(problem.Get))
 	router.POST("/api/v1/problem", toResponse(problem.Insert))
+	router.POST("/api/v1/problem/url", toResponse(problem.AddByLeetcodeUrl))
 	router.PUT("/api/v1/problem", toResponse(problem.Update))
 	router.DELETE("/api/v1/problem", toResponse(problem.Delete))
 

@@ -73,11 +73,11 @@ func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	_, err = solution.InsertSolution(req.Context(), data.ProblemId, data.Title, data.Language, data.Content, data.Caption)
+	id, err := solution.InsertSolution(req.Context(), data.ProblemId, data.Title, data.Language, data.Content, data.Caption)
 	if err != nil {
 		return 400, nil, fmt.Errorf("insert solution err:%w", err)
 	}
-	return 200, nil, nil
+	return 200, id, nil
 }
 
 func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {

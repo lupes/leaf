@@ -1,21 +1,30 @@
 <template>
     <div>
         <a-row>
-            <a-col :offset="4" :span="16">
+            <a-col :offset="2" :span="18">
+                <a-input placeholder="标题" v-model="solution.title"/>
+            </a-col>
+        </a-row>
+        <a-row style="margin: 10px"></a-row>
+        <a-row>
+            <a-col :offset="2" :span="18">
+                <a-textarea
+                        v-model="solution.caption"
+                        placeholder="解题思路"
+                        :autosize="{ minRows: 4, maxRows: 8 }"
+                />
+            </a-col>
+        </a-row>
+        <a-row style="margin: 10px"></a-row>
+        <a-row>
+            <a-col :offset="2" :span="18">
                 <ace v-bind:value="solution.content" v-bind:readOnly="readOnly" v-on:input="getValue"></ace>
             </a-col>
         </a-row>
-        <a-row type="flex">
-            <a-col>
-                <p class="height-50"></p>
-            </a-col>
-        </a-row>
+        <a-row style="margin: 10px"></a-row>
         <a-row>
             <a-col :offset="7" :span="2">
-                <a-button type="primary" v-on:click="test">Show</a-button>
-            </a-col>
-            <a-col :offset="7" :span="2">
-                <a-button type="primary">Submit</a-button>
+                <a-button type="primary" @click="addSolution">Submit</a-button>
             </a-col>
         </a-row>
     </div>
@@ -28,28 +37,28 @@
     name: 'Solution',
     data() {
       return {
-        now: "",
         solution: {
+          problem_id: parseInt(this.$route.params.id),
+          title: "",
+          language: "golang",
+          caption: "",
           content: "",
         },
+        now: "",
         readOnly: false,
       }
     },
-    mounted() {
-      this.getSolution(this.$route.params.id, res => {
-        console.log(res.data.data);
-        this.solution = res.data.data;
-        this.content = res.data.data.content;
-      });
-    },
     methods: {
-      getSolution(solution_id, callback) {
+      addSolution() {
         let app = this;
-        axios.get("http://localhost/api/v1/solution/" + solution_id)
-          .then(callback)
-          .catch(function (error) {
-            app.$message.error("请求失败 " + error);
-          })
+        this.solution.content = this.now;
+        axios.post("http://localhost/api/v1/solution", this.solution,
+        ).then(function (res) {
+          app.$message.info("题解添加成功");
+          console.log(res)
+        }).catch(function (error) {
+          app.$message.error("请求失败 " + error);
+        })
       },
       getValue: function (value) {
         this.now = value

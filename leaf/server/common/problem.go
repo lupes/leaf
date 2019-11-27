@@ -8,6 +8,8 @@ type Problem struct {
 	Id          int64     `json:"id"`
 	Title       string    `json:"title"`
 	Url         string    `json:"url"`
+	Topics      string    `json:"topics"`
+	Difficulty  string    `json:"difficulty"`
 	Content     string    `json:"content"`
 	CreatedTime time.Time `json:"created_time"`
 	UpdatedTime time.Time `json:"updated_time"`

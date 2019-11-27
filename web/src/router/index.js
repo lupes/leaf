@@ -27,8 +27,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "ace" */ '../views/Problem.vue'),
   },
   {
-    path: '/solution/add',
-    name: 'solution',
+    path: '/solution/add/:id',
+    name: 'solutionAdd',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -36,7 +36,7 @@ const routes = [
   },
   {
     path: '/solution/detail/:id',
-    name: 'solution',
+    name: 'solutionDetail',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -44,7 +44,7 @@ const routes = [
   },
   {
     path: '/solution/edit/:id',
-    name: 'solution',
+    name: 'solutionEdit',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

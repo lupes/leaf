@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -57,21 +58,57 @@ func Get(w http.ResponseWriter, req *http.Request, params httprouter.Params) (in
 	return 200, res, nil
 }
 
-func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
+func AddByLeetcodeUrl(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
 	data := struct {
-		Title   string `json:"title"`
-		Url     string `json:"url"`
-		Content string `json:"content"`
+		Url string `json:"url"`
 	}{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	_, err = problem.InsertProblem(req.Context(), data.Title, data.Url, data.Content)
+
+	slug, err := GetTitleSlugFromUrl(data.Url)
+	if err != nil {
+		return 400, nil, fmt.Errorf("get title slug err:%w", err)
+	}
+
+	res, err := PostGraphQL(req.Context(), slug)
+	if err != nil {
+		return 400, nil, fmt.Errorf("get leetcode data err:%w", err)
+	}
+
+	question := res.Data.Question
+
+	var topics []string
+	for _, topic := range question.TopicTags {
+		topics = append(topics, topic.TranslatedName)
+	}
+
+	id, err := problem.InsertProblem(req.Context(), question.TranslatedTitle, data.Url,
+		strings.Join(topics, ";"), question.Difficulty, question.TranslatedContent)
+	if err != nil {
+		return 400, nil, fmt.Errorf("insert problem err:%w", err)
+	}
+	return 200, id, nil
+}
+
+func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
+	data := struct {
+		Title      string `json:"title"`
+		Url        string `json:"url"`
+		Topics     string `json:"topics"`
+		Difficulty string `json:"difficulty"`
+		Content    string `json:"content"`
+	}{}
+	err := json.NewDecoder(req.Body).Decode(&data)
+	if err != nil {
+		return 400, nil, fmt.Errorf("decode request body err:%w", err)
+	}
+	id, err := problem.InsertProblem(req.Context(), data.Title, data.Url, data.Topics, data.Difficulty, data.Content)
 	if err != nil {
 		return 400, nil, fmt.Errorf("insert problem content[%s] err:%w", data.Content, err)
 	}
-	return 200, nil, nil
+	return 200, id, nil
 }
 
 func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {

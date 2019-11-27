@@ -2,14 +2,17 @@ CREATE TABLE `problem`
 (
     `id`           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
     `title`        varchar(255)        NOT NULL COMMENT '题目标题',
+    `url`          varchar(255)        NOT NULL COMMENT '题目链接',
+    `topics`       varchar(255) DEFAULT NULL COMMENT '题目标签',
+    `difficulty`   varchar(16)  DEFAULT NULL COMMENT '题目难度',
     `content`      text                NOT NULL COMMENT '题目内容',
     `created_time` datetime            NOT NULL COMMENT '创建时间',
     `updated_time` datetime            NOT NULL COMMENT '更新时间',
-    `deleted_time` datetime DEFAULT NULL COMMENT '删除时间',
+    `deleted_time` datetime     DEFAULT NULL COMMENT '删除时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `id` (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 16
+  AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4
     COMMENT ='题目表';
 
@@ -28,6 +31,6 @@ CREATE TABLE `solution`
     UNIQUE KEY `id` (`id`),
     KEY `idx_solution_problem_id_01` (`problem_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 5
+  AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4
     COMMENT ='题解表';

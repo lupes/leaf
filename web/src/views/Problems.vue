@@ -32,7 +32,6 @@
 </template>
 
 <script>
-
   import axios from "axios"
 
   export default {
@@ -72,7 +71,8 @@
       closeProblem(f) {
         this.visible = f
       },
-      handlerOk() {
+      handlerOk(problem) {
+        console.warn(problem)
       },
       handlerCancel() {
         this.visible = false
@@ -101,19 +101,20 @@
           app.$message.error("请求失败 " + error);
         })
       },
-      addProblem() {
+      addProblem(problem) {
         let app = this;
         this.visible = false;
-        axios.post("http://localhost/api/v1/problem", {
-          title: app.problem.title,
-          url: app.problem.url,
-          content: app.problem.content,
-        }).then(function () {
+        if(problem.content === "") {
+          console.warn(problem);
+          return
+        }
+        axios.post("http://localhost/api/v1/problem", problem).then(function (res) {
           app.$message.success("添加成功");
-          app.getProblems(app.pageSize * (app.page - 1), res => {
-            app.pagination.total = res.data.data.count;
-            app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-          });
+          app.$router.push("/problem/"+res.data.data)
+          // app.getProblems(app.pageSize * (app.page - 1), res => {
+          //   app.pagination.total = res.data.data.count;
+          //   app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+          // });
         }).catch(function (error) {
           app.$message.error("请求失败 " + error);
         });
