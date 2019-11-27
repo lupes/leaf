@@ -1,30 +1,29 @@
 <template>
     <div>
-        <a-row>
-            <a-col :offset="18" :span="3">
-                <a-button type="primary" :href="getAddSolutionUrl">添加题解</a-button>
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="18">
+                <Back />
+                <a-button type="primary" :href="getAddSolutionUrl" size="small" style="float: right;">添加题解</a-button>
             </a-col>
         </a-row>
-        <a-row style="margin: 20px 0;">
-            <a-col :offset="3" :span="8">
+        <a-row  type="flex" justify="center" style="margin: 20px 0">
+            <a-col :span="18">
                 <span><strong><a :href="problem.url">{{ problem.title }}</a></strong></span>
-            </a-col>
-            <a-col :offset="6" :span="6">
-                <span>{{ problem.created_time | datetime }} </span>
+                <span style="float: right;">{{ problem.created_time | datetime }} </span>
             </a-col>
         </a-row>
-        <a-row>
-            <a-col :offset="3" :span="19">
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="18">
                 <p v-html="problem.content"></p>
             </a-col>
         </a-row>
-        <a-row>
-            <a-col :offset="2" :span="19">
-                <a-list class="" itemLayout="horizontal" :pagination="pagination"
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="18">
+                <a-list class="" itemLayout="horizontal" :pagination="pagination" header="题解列表"
                         :dataSource="solutions">
                     <a-list-item slot="renderItem" slot-scope="item">
-                        <span style="width: 200px">{{ item.title }}</span>
-                        <span style="margin-left: 300px;">{{ item.created_time | datetime }}</span>
+                        <span>{{ item.title }}</span>
+                        <span slot="actions">{{ item.created_time | datetime }}</span>
                         <a slot="actions" :href="'/solution/edit/'+item.id">编辑</a>
                         <a slot="actions" :href="'/solution/detail/'+item.id">详情</a>
                     </a-list-item>

@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import {Layout, Menu, Modal, Input,Button, Col, List, Row, message} from 'ant-design-vue';
+import {Layout, Menu, Modal, Input,Button, Col, List, Row, message, Icon, Dropdown, Popconfirm} from 'ant-design-vue';
 import ace from 'ace-builds'
 import componentsInstall from './components/install'
 import moment from "moment";
@@ -26,6 +26,9 @@ Vue.component(Col.name, Col);
 Vue.component(List.name, List);
 Vue.component(List.Item.name, List.Item);
 Vue.component(List.Item.Meta.name, List.Item.Meta);
+Vue.component(Icon.name, Icon);
+Vue.component(Dropdown.name, Dropdown);
+Vue.component(Popconfirm.name, Popconfirm);
 Vue.prototype.$message = message;
 Vue.config.productionTip = false;
 

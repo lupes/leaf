@@ -29,8 +29,8 @@
     mounted() {
       this.aceEditor = ace.edit(this.$refs.ace, {
         value: this.value,
-        maxLines: 30,
-        minLines: 30,
+        maxLines: 25,
+        minLines: 25,
         fontSize: 14,
         theme: this.theme,
         mode: this.mode,

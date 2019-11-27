@@ -1,8 +1,17 @@
 <template>
     <div>
-        <a-row>
-            <a-col :offset="11" :span="4">
-                <a-button type="primary" @click="()=> this.open = true">添加Leetcode题目</a-button>
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="18">
+                <Back/>
+                <a-dropdown style="float: right;">
+                    <a-menu slot="overlay">
+                        <a-menu-item key="1" @click="()=> this.open = true">Leetcode</a-menu-item>
+                        <a-menu-item key="2" @click="showAddProblem">手动添加</a-menu-item>
+                    </a-menu>
+                    <a-button> 添加题目
+                        <a-icon type="down"/>
+                    </a-button>
+                </a-dropdown>
                 <a-modal
                         title="添加Leetcode题目"
                         cancelText="取消"
@@ -14,9 +23,6 @@
                     <div style="margin: 10px 0"></div>
                     <a-input placeholder="题目连接" v-model="url"/>
                 </a-modal>
-            </a-col>
-            <a-col :offset="2" :span="2">
-                <a-button type="primary" @click="showAddProblem">添加题目</a-button>
                 <problem-modal @ok="handlerOk"
                                @cancel="handlerCancel"
                                @change="closeProblem"
@@ -27,17 +33,25 @@
                                v-model="visible"/>
             </a-col>
         </a-row>
-        <a-row>
-            <a-col :offset="4" :span="16">
-                <a-list itemLayout="horizontal" :pagination="pagination"
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="18">
+                <a-list itemLayout="horizontal" :pagination="pagination" header="题解列表"
                         :dataSource="problems">
                     <a-list-item slot="renderItem" slot-scope="item">
-                        <span style="margin-right: 10px; width: 350px; ">{{ item.title }}</span>
-                        <span>{{ item.created_time | datetime }}</span>
+                        <span>{{ item.title }}</span>
+                        <span slot="actions">{{ item.created_time | datetime }}</span>
                         <a slot="actions" @click="showEditProblem(item)">编辑</a>
                         <a slot="actions" :href="'/problem/'+item.id">详情</a>
                         <a slot="actions" v-if="item.url !== ''" :href="item.url">链接</a>
-                        <a slot="actions" @click="delProblem(item)">删除</a>
+                        <a-popconfirm
+                                title="确认删除?"
+                                @confirm="delProblem(item)"
+                                okText="是"
+                                cancelText="否"
+                                slot="actions"
+                        >
+                            <a href="#">删除</a>
+                        </a-popconfirm>
                     </a-list-item>
                 </a-list>
             </a-col>
@@ -47,9 +61,11 @@
 
 <script>
   import axios from "axios"
+  import Back from "../components/Back";
 
   export default {
     name: "Problems",
+    components: {Back},
     data() {
       return {
         open: false,
