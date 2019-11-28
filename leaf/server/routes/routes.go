@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/sirupsen/logrus"
@@ -20,7 +19,6 @@ type Handler func(w http.ResponseWriter, req *http.Request, params httprouter.Pa
 func toResponse(handler Handler) httprouter.Handle {
 	return func(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
 		var res common.ResponseCommon
-		start := time.Now()
 		status, data, err := handler(w, req, params)
 		if err != nil {
 			logrus.Errorf("%s", err)
@@ -48,7 +46,6 @@ func toResponse(handler Handler) httprouter.Handle {
 		if err != nil {
 			logrus.Errorf("%s", err)
 		}
-		logrus.Infof("use time:%s", time.Now().Sub(start))
 	}
 }
 

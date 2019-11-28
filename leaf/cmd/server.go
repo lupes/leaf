@@ -10,7 +10,9 @@ import (
 )
 
 func serverRun(cmd *cobra.Command, args []string) {
-	neg := negroni.New(negroni.NewRecovery(), negroni.NewLogger())
+	logger := negroni.NewLogger()
+	logger.SetDateFormat("2006-01-02 15:04:05")
+	neg := negroni.New(negroni.NewRecovery(), logger)
 
 	router := httprouter.New()
 	routes.InitRoutes(router)
