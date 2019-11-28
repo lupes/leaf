@@ -19,7 +19,7 @@ func GetDB() *sql.DB {
 }
 
 func initMysql() {
-	db, err = sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/leaf?charset=utf8mb4&parseTime=true&&loc=Asia%2FShanghai")
+	db, err = sql.Open("mysql", "root:123456@tcp(database:3306)/leaf?charset=utf8mb4&parseTime=true&&loc=Asia%2FShanghai")
 	if err != nil {
 		logrus.Errorf("open database err:%s", err)
 		os.Exit(1)

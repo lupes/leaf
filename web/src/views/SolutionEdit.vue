@@ -21,7 +21,7 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <ace v-bind:value="solution.content" v-bind:readOnly="readOnly" v-on:input="getValue"></ace>
+                <ace v-model="solution.content" v-bind:readOnly="readOnly"></ace>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -48,7 +48,7 @@
     },
     mounted() {
       this.getSolution(this.$route.params.id, res => {
-        console.log(res.data.data);
+        this.$message.info("请求成功");
         this.solution = res.data.data;
         this.content = res.data.data.content;
       });
@@ -67,8 +67,8 @@
         this.solution.content = this.now;
         axios.put("http://localhost/api/v1/solution", this.solution,
         ).then(function (res) {
-          app.$message.info("题解添加成功");
           console.log(res)
+          app.$message.info("题解编辑成功");
         }).catch(function (error) {
           app.$message.error("请求失败 " + error);
         })

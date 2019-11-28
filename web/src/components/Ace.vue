@@ -15,6 +15,10 @@
 
   export default {
     name: "Ace",
+    model: {
+      prop: 'value',
+      event: 'change'
+    },
     props: {
       value: String,
       readOnly: Boolean,
@@ -49,7 +53,8 @@
     },
     methods: {
       change() {
-        this.$emit('input', this.aceEditor.getSession().getValue());
+        this.value = this.aceEditor.getSession().getValue();
+        // this.$emit('input', this.aceEditor.getSession().getValue());
       }
     }
   }
