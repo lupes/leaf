@@ -2,7 +2,7 @@
     <div>
         <a-row type="flex" justify="start">
             <a-col :offset="3" :span="18">
-                <back />
+                <back/>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -12,16 +12,12 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <a-textarea
-                        v-model="solution.caption"
-                        placeholder="解题思路"
-                        :autosize="{ minRows: 4, maxRows: 8 }"
-                />
+                <a-textarea v-model="solution.caption" placeholder="解题思路" :autosize="{ minRows: 4, maxRows: 8 }"/>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <ace v-model="solution.content" v-bind:readOnly="readOnly"></ace>
+                <ace v-bind:value="solution.content" v-bind:readOnly="readOnly" @input="getValue"></ace>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -48,9 +44,12 @@
     },
     mounted() {
       this.getSolution(this.$route.params.id, res => {
-        this.$message.info("请求成功");
-        this.solution = res.data.data;
-        this.content = res.data.data.content;
+        if(res.status === 200 && res.data.code === 1) {
+          this.$message.info("请求成功");
+          this.solution = res.data.data;
+        } else {
+          this.$message.error("请求失败 " + res.data.message);
+        }
       });
     },
     methods: {
@@ -67,8 +66,11 @@
         this.solution.content = this.now;
         axios.put("http://localhost/api/v1/solution", this.solution,
         ).then(function (res) {
-          console.log(res)
-          app.$message.info("题解编辑成功");
+          if(res.status === 200 && res.data.code === 1) {
+            app.$message.info("题解编辑成功");
+          } else {
+            app.$message.error("请求失败 " + res.data.message);
+          }
         }).catch(function (error) {
           app.$message.error("请求失败 " + error);
         })
@@ -76,9 +78,6 @@
       getValue: function (value) {
         this.now = value
       },
-      test: function (res) {
-        console.log(res)
-      }
     }
   }
 </script>

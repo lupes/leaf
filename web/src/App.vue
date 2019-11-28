@@ -18,7 +18,7 @@
             <router-view :style="{ background: '#fff', padding: '24px', minHeight: '785px'}"/>
         </a-layout-content>
         <a-layout-footer style="text-align: center">
-            Leaf ©2019 Created by Leaf
+            Leaf ©2019 Created by Elena
         </a-layout-footer>
     </a-layout>
 </template>

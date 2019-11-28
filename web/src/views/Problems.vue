@@ -83,9 +83,13 @@
         pagination: {
           onChange: page => {
             this.getProblems(this.pageSize * (page - 1), res => {
-              this.page = page;
-              this.pagination.total = res.data.data.count;
-              this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+              if(res.status === 200 && res.data.code === 1) {
+                this.page = page;
+                this.pagination.total = res.data.data.count;
+                this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+              } else {
+                this.$message.error("请求失败 " + res.data.message);
+              }
             });
           },
           total: 0,
@@ -95,8 +99,12 @@
     },
     mounted() {
       this.getProblems(0, res => {
-        this.pagination.total = res.data.data.count;
-        this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+        if(res.status === 200 && res.data.code === 1) {
+          this.pagination.total = res.data.data.count;
+          this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+        } else {
+          this.$message.error("请求失败 " + res.data.message);
+        }
       });
     },
     methods: {
@@ -107,8 +115,12 @@
           app.$message.warn("content为空");
         }
         axios.post("http://localhost/api/v1/problem/url", {url: app.url}).then(function (res) {
-          app.$message.success("添加成功");
-          app.$router.push("/problem/" + res.data.data)
+          if(res.status === 200 && res.data.code === 1) {
+            app.$message.success("添加成功");
+            app.$router.push("/problem/" + res.data.data)
+          } else {
+            app.$message.error("请求失败 " + res.data.message);
+          }
         }).catch(function (error) {
           app.$message.error("请求失败 " + error);
         });
@@ -151,6 +163,12 @@
           app.$message.warn("content为空");
         }
         axios.post("http://localhost/api/v1/problem", problem).then(function (res) {
+          if(res.status === 200 && res.data.code === 1) {
+            app.$message.info("请求成功");
+            app.solution = res.data.data;
+          } else {
+            app.$message.error("请求失败 " + res.data.message);
+          }
           app.$message.success("添加成功");
           app.$router.push("/problem/" + res.data.data)
         }).catch(function (error) {
@@ -166,12 +184,16 @@
             title: problem.title,
             url: problem.url,
             content: problem.content,
-          }).then(function () {
-            app.$message.success("编辑成功");
-            app.getProblems(app.pageSize * (app.page - 1), res => {
-              app.pagination.total = res.data.data.count;
-              app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-            });
+          }).then(function (res) {
+            if(res.status === 200 && res.data.code === 1) {
+              app.$message.success("编辑成功");
+              app.getProblems(app.pageSize * (app.page - 1), res => {
+                app.pagination.total = res.data.data.count;
+                app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+              });
+            } else {
+              app.$message.error("请求失败 " + res.data.message);
+            }
           }).catch(function (error) {
             app.$message.error("请求失败 " + error);
           });
@@ -183,12 +205,16 @@
           data: {
             problem_id: item.id
           }
-        }).then(function () {
-          app.$message.success("删除成功");
-          app.getProblems(app.pageSize * (app.page - 1), res => {
-            app.pagination.total = res.data.data.count;
-            app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-          });
+        }).then(function (res) {
+          if(res.status === 200 && res.data.code === 1) {
+            app.$message.success("删除成功");
+            app.getProblems(app.pageSize * (app.page - 1), res => {
+              app.pagination.total = res.data.data.count;
+              app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
+            });
+          } else {
+            app.$message.error("请求失败 " + res.data.message);
+          }
         }).catch(function (error) {
           app.$message.error("请求失败 " + error);
         });

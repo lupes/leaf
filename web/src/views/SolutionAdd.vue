@@ -2,7 +2,7 @@
     <div>
         <a-row type="flex" justify="start">
             <a-col :offset="3" :span="18">
-                <back />
+                <back/>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -12,11 +12,7 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <a-textarea
-                        v-model="solution.caption"
-                        placeholder="解题思路"
-                        :autosize="{ minRows: 4, maxRows: 8 }"
-                />
+                <a-textarea v-model="solution.caption" placeholder="解题思路" :autosize="{ minRows: 4, maxRows: 8 }"/>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -56,17 +52,18 @@
         this.solution.content = this.now;
         axios.post("http://localhost/api/v1/solution", this.solution,
         ).then(function (res) {
-          app.$message.info("题解添加成功");
-          console.log(res)
+          if(res.status === 200 && res.data.code === 1) {
+            app.$message.info("请求成功");
+            app.solution = res.data.data;
+          } else {
+            app.$message.error("请求失败 " + res.data.message);
+          }
         }).catch(function (error) {
           app.$message.error("请求失败 " + error);
         })
       },
       getValue: function (value) {
         this.now = value
-      },
-      test: function (res) {
-        console.log(res)
       }
     }
   }

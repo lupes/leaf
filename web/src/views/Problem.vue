@@ -46,8 +46,12 @@
         pagination: {
           onChange: page => {
             this.getSolutions(this.pageSize * (page - 1), this.$route.params.id, res => {
-              this.pagination.total = res.data.data.count;
-              this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
+              if(res.status === 200 && res.data.code === 1) {
+                this.pagination.total = res.data.data.count;
+                this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
+              } else {
+                this.$message.error("请求失败 " + res.data.message);
+              }
             });
           },
           total: 0,
@@ -57,11 +61,19 @@
     },
     mounted() {
       this.getProblem(this.$route.params.id, res => {
-        this.problem = res.data.data
+        if(res.status === 200 && res.data.code === 1) {
+          this.problem = res.data.data
+        } else {
+          this.$message.error("请求失败 " + res.data.message);
+        }
       });
       this.getSolutions(0, this.$route.params.id, res => {
-        this.pagination.total = res.data.data.count;
-        this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
+        if(res.status === 200 && res.data.code === 1) {
+          this.pagination.total = res.data.data.count;
+          this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
+        } else {
+          this.$message.error("请求失败 " + res.data.message);
+        }
       })
     },
     computed: {

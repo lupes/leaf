@@ -53,15 +53,11 @@
     },
     methods: {
       change() {
-        this.value = this.aceEditor.getSession().getValue();
-        // this.$emit('input', this.aceEditor.getSession().getValue());
+        this.$emit('input', this.aceEditor.getSession().getValue());
       }
     }
   }
 </script>
 
 <style lang='css' scoped>
-    .scrollmargin {
-        height: 80px;
-    }
 </style>

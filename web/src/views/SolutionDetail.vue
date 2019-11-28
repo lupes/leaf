@@ -12,11 +12,7 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <a-textarea
-                        v-model="solution.caption"
-                        placeholder="解题思路"
-                        :autosize="{ minRows: 4, maxRows: 8 }"
-                />
+                <a-textarea v-model="solution.caption" placeholder="解题思路" :autosize="{ minRows: 4, maxRows: 8 }"/>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -46,7 +42,12 @@
     },
     mounted() {
       this.getSolution(this.$route.params.id, res => {
-        this.solution = res.data.data;
+        if(res.status === 200 && res.data.code === 1) {
+          this.$message.info("请求成功");
+          this.solution = res.data.data;
+        } else {
+          this.$message.error("请求失败 " + res.data.message);
+        }
       });
     },
     methods: {

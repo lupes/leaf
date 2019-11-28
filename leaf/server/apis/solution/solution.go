@@ -82,19 +82,19 @@ func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 
 func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
 	data := struct {
-		SolutionId int64  `json:"solution_id"`
-		Title      string `json:"title"`
-		Language   string `json:"language"`
-		Content    string `json:"content"`
-		Caption    string `json:"caption"`
+		Id       int64  `json:"id"`
+		Title    string `json:"title"`
+		Language string `json:"language"`
+		Content  string `json:"content"`
+		Caption  string `json:"caption"`
 	}{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	err = solution.UpdateSolution(req.Context(), data.SolutionId, data.Title, data.Language, data.Content, data.Caption)
+	err = solution.UpdateSolution(req.Context(), data.Id, data.Title, data.Language, data.Content, data.Caption)
 	if err != nil {
-		return 400, nil, fmt.Errorf("update solution by id[%d] err:%w", data.SolutionId, err)
+		return 400, nil, fmt.Errorf("update solution by id[%d] err:%w", data.Id, err)
 	}
 	return 200, nil, nil
 }
