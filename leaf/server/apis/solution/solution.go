@@ -9,7 +9,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 
 	"leaf/server/common"
-	"leaf/server/database/problem"
 	"leaf/server/database/solution"
 )
 
@@ -101,15 +100,15 @@ func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 
 func Delete(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
 	data := struct {
-		SolutionId int64 `json:"solution_id"`
+		Id int64 `json:"id"`
 	}{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	err = problem.DeleteProblem(req.Context(), data.SolutionId)
+	err = solution.DeleteSolution(req.Context(), data.Id)
 	if err != nil {
-		return 400, nil, fmt.Errorf("delete solution by id[%d] err:%w", data.SolutionId, err)
+		return 400, nil, fmt.Errorf("delete solution by id[%d] err:%w", data.Id, err)
 	}
 	return 200, nil, nil
 }

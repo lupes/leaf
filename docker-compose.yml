@@ -20,13 +20,6 @@ services:
     links:
       - web
       - server
-  web:
-    build:
-      context: ./web
-      dockerfile: ./Dockerfile
-    restart: always
-    volumes:
-      - "./web:/web"
   server:
     build:
       context: ./leaf
@@ -36,6 +29,13 @@ services:
       - database
     depends_on:
       - database
+  web:
+    build:
+      context: ./web
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - "./web:/web"
 #  centos:
 #    build:
 #      context: ./centos

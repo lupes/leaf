@@ -43,13 +43,7 @@
                         <a slot="actions" @click="showEditProblem(item)">编辑</a>
                         <a slot="actions" :href="'/problem/'+item.id">详情</a>
                         <a slot="actions" v-if="item.url !== ''" :href="item.url">链接</a>
-                        <a-popconfirm
-                                title="确认删除?"
-                                @confirm="delProblem(item)"
-                                okText="是"
-                                cancelText="否"
-                                slot="actions"
-                        >
+                        <a-popconfirm title="确认删除?" @confirm="delProblem(item)" okText="是" cancelText="否" slot="actions" >
                             <a href="#">删除</a>
                         </a-popconfirm>
                     </a-list-item>

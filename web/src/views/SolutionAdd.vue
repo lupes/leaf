@@ -50,11 +50,9 @@
       addSolution() {
         let app = this;
         this.solution.content = this.now;
-        axios.post("http://localhost/api/v1/solution", this.solution,
-        ).then(function (res) {
+        axios.post("http://localhost/api/v1/solution", this.solution).then(function (res) {
           if(res.status === 200 && res.data.code === 1) {
-            app.$message.info("请求成功");
-            app.solution = res.data.data;
+            app.$message.info("题解添加成功");
           } else {
             app.$message.error("请求失败 " + res.data.message);
           }
