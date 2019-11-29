@@ -113,33 +113,33 @@ func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 
 func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
 	data := struct {
-		ProblemId int64  `json:"problem_id"`
-		Title     string `json:"title"`
-		Url       string `json:"url"`
-		Content   string `json:"content"`
+		Id      int64  `json:"id"`
+		Title   string `json:"title"`
+		Url     string `json:"url"`
+		Content string `json:"content"`
 	}{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	err = problem.UpdateProblem(req.Context(), data.ProblemId, data.Title, data.Url, data.Content)
+	err = problem.UpdateProblem(req.Context(), data.Id, data.Title, data.Url, data.Content)
 	if err != nil {
-		return 400, nil, fmt.Errorf("update problem by id[%d] err:%w", data.ProblemId, err)
+		return 400, nil, fmt.Errorf("update problem by id[%d] err:%w", data.Id, err)
 	}
 	return 200, nil, nil
 }
 
 func Delete(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
 	data := struct {
-		ProblemId int64 `json:"problem_id"`
+		Id int64 `json:"id"`
 	}{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	err = problem.DeleteProblem(req.Context(), data.ProblemId)
+	err = problem.DeleteProblem(req.Context(), data.Id)
 	if err != nil {
-		return 400, nil, fmt.Errorf("delete problem by id[%d] err:%w", data.ProblemId, err)
+		return 400, nil, fmt.Errorf("delete problem by id[%d] err:%w", data.Id, err)
 	}
 	return 200, nil, nil
 }

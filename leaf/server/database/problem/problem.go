@@ -55,9 +55,9 @@ func ProblemCount(ctx context.Context) (int, error) {
 	return count, nil
 }
 
-func Problem(ctx context.Context, problemId int) (common.Problem, error) {
+func Problem(ctx context.Context, id int) (common.Problem, error) {
 	var problem common.Problem
-	row := database.GetDB().QueryRowContext(ctx, selectProblemById, problemId)
+	row := database.GetDB().QueryRowContext(ctx, selectProblemById, id)
 	err := row.Scan(&problem.Id, &problem.Title, &problem.Url, &problem.Topics,
 		&problem.Difficulty, &problem.Content, &problem.CreatedTime, &problem.UpdatedTime)
 	if err != nil {
@@ -86,9 +86,9 @@ func InsertProblem(ctx context.Context, title, url, topics, difficulty, content 
 	return id, nil
 }
 
-func UpdateProblem(ctx context.Context, problemId int64, title, url, content string) error {
+func UpdateProblem(ctx context.Context, id int64, title, url, content string) error {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, updateProblem, title, url, content, time.Now(), problemId)
+	res, err := db.ExecContext(ctx, updateProblem, title, url, content, time.Now(), id)
 	if err != nil {
 		return fmt.Errorf("update problem err:%w", err)
 	}
@@ -102,11 +102,11 @@ func UpdateProblem(ctx context.Context, problemId int64, title, url, content str
 	return nil
 }
 
-func DeleteProblem(ctx context.Context, problemId int64) error {
+func DeleteProblem(ctx context.Context, id int64) error {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, deleteProblem, time.Now(), problemId)
+	res, err := db.ExecContext(ctx, deleteProblem, time.Now(), id)
 	if err != nil {
-		return fmt.Errorf("delete problem id[%d] err:%w", problemId, err)
+		return fmt.Errorf("delete problem id[%d] err:%w", id, err)
 	}
 	affected, err := res.RowsAffected()
 	if err != nil {

@@ -3,12 +3,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import {Layout, Menu, Modal, Input,Button, Col, List, Row, message, Icon, Dropdown, Popconfirm} from 'ant-design-vue';
+import {Button, Col, Dropdown, Icon, Input, Layout, List, Menu, message, Modal, Popconfirm, Row} from 'ant-design-vue';
 import ace from 'ace-builds'
 import componentsInstall from './components/install'
 import moment from "moment";
+import http from "./components/http";
 
 Vue.use(ace);
+Vue.use(http);
 Vue.use(componentsInstall);
 Vue.component(Layout.name, Layout);
 Vue.component(Layout.Header.name, Layout.Header);

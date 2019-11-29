@@ -43,7 +43,8 @@
                         <a slot="actions" @click="showEditProblem(item)">编辑</a>
                         <a slot="actions" :href="'/problem/'+item.id">详情</a>
                         <a slot="actions" v-if="item.url !== ''" :href="item.url">链接</a>
-                        <a-popconfirm title="确认删除?" @confirm="delProblem(item)" okText="是" cancelText="否" slot="actions" >
+                        <a-popconfirm title="确认删除?" @confirm="delProblem(item)" okText="是" cancelText="否"
+                                      slot="actions">
                             <a href="#">删除</a>
                         </a-popconfirm>
                     </a-list-item>
@@ -54,12 +55,8 @@
 </template>
 
 <script>
-  import axios from "axios"
-  import Back from "../components/Back";
-
   export default {
     name: "Problems",
-    components: {Back},
     data() {
       return {
         open: false,
@@ -76,15 +73,7 @@
         page: 1,
         pagination: {
           onChange: page => {
-            this.getProblems(this.pageSize * (page - 1), res => {
-              if(res.status === 200 && res.data.code === 1) {
-                this.page = page;
-                this.pagination.total = res.data.data.count;
-                this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-              } else {
-                this.$message.error("请求失败 " + res.data.message);
-              }
-            });
+            this.getProblems(page, this.pageSize);
           },
           total: 0,
           pageSize: 10,
@@ -92,33 +81,9 @@
       };
     },
     mounted() {
-      this.getProblems(0, res => {
-        if(res.status === 200 && res.data.code === 1) {
-          this.pagination.total = res.data.data.count;
-          this.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-        } else {
-          this.$message.error("请求失败 " + res.data.message);
-        }
-      });
+      this.getProblems(1, this.pageSize)
     },
     methods: {
-      handleLeetcodeOk() {
-        let app = this;
-        this.open = false;
-        if(app.url === "") {
-          app.$message.warn("content为空");
-        }
-        axios.post("http://localhost/api/v1/problem/url", {url: app.url}).then(function (res) {
-          if(res.status === 200 && res.data.code === 1) {
-            app.$message.success("添加成功");
-            app.$router.push("/problem/" + res.data.data)
-          } else {
-            app.$message.error("请求失败 " + res.data.message);
-          }
-        }).catch(function (error) {
-          app.$message.error("请求失败 " + error);
-        });
-      },
       closeProblem(f) {
         this.visible = f
       },
@@ -142,79 +107,39 @@
         this.visible = true;
         this.title = "编辑题目";
       },
-      getProblems(offset, callback) {
-        let app = this;
-        axios.get("http://localhost/api/v1/problem", {
-          params: {limit: this.pageSize, offset: offset}
-        }).then(callback).catch(function (error) {
-          app.$message.error("请求失败 " + error);
-        })
-      },
-      addProblem(problem) {
-        let app = this;
-        this.visible = false;
-        if(problem.content === "") {
-          app.$message.warn("content为空");
-        }
-        axios.post("http://localhost/api/v1/problem", problem).then(function (res) {
-          if(res.status === 200 && res.data.code === 1) {
-            app.$message.info("请求成功");
-            app.solution = res.data.data;
-          } else {
-            app.$message.error("请求失败 " + res.data.message);
-          }
-          app.$message.success("添加成功");
-          app.$router.push("/problem/" + res.data.data)
-        }).catch(function (error) {
-          app.$message.error("请求失败 " + error);
+      getProblems(page, pageSize) {
+        this.httpGetProblems(this, pageSize, pageSize * (page - 1), data => {
+          this.pagination.total = data.count;
+          this.problems = data.problems == null ? [] : data.problems;
         });
+      },
+      handleLeetcodeOk() {
+        this.open = false;
+        this.httpAddLeetcodeProblem(this, this.url, data => {
+          this.$router.push("/problem/" + data)
+        });
+      },
+      addProblem() {
+        return this.httpAddProblem(this, this.problem, data => {
+          this.$router.push("/problem/" + data)
+        })
       },
       editProblem(id) {
         return (problem) => {
-          let app = this;
           this.visible = false;
-          axios.put("http://localhost/api/v1/problem", {
-            problem_id: id,
-            title: problem.title,
-            url: problem.url,
-            content: problem.content,
-          }).then(function (res) {
-            if(res.status === 200 && res.data.code === 1) {
-              app.$message.success("编辑成功");
-              app.getProblems(app.pageSize * (app.page - 1), res => {
-                app.pagination.total = res.data.data.count;
-                app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-              });
-            } else {
-              app.$message.error("请求失败 " + res.data.message);
-            }
-          }).catch(function (error) {
-            app.$message.error("请求失败 " + error);
+          problem.id = id;
+          this.httpEditProblem(this, problem, () => {
+            this.getProblems(this.page, this.pageSize)
           });
         }
       },
       delProblem(item) {
-        let app = this;
-        axios.delete("http://localhost/api/v1/problem", {
-          data: {
-            problem_id: item.id
-          }
-        }).then(function (res) {
-          if(res.status === 200 && res.data.code === 1) {
-            app.$message.success("删除成功");
-            app.getProblems(app.pageSize * (app.page - 1), res => {
-              app.pagination.total = res.data.data.count;
-              app.problems = res.data.data.problems == null ? [] : res.data.data.problems;
-            });
-          } else {
-            app.$message.error("请求失败 " + res.data.message);
-          }
-        }).catch(function (error) {
-          app.$message.error("请求失败 " + error);
-        });
+        this.httpDelProblem(this, item.id, () => {
+          this.getProblems(this.page, this.pageSize)
+        })
       },
     },
-  };
+  }
 </script>
 
 <style>

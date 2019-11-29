@@ -54,9 +54,9 @@ func SolutionCount(ctx context.Context, problemId int64) (int, error) {
 	return count, nil
 }
 
-func Solution(ctx context.Context, solutionId int) (common.Solution, error) {
+func Solution(ctx context.Context, id int) (common.Solution, error) {
 	var solution common.Solution
-	row := database.GetDB().QueryRowContext(ctx, selectSolutionById, solutionId)
+	row := database.GetDB().QueryRowContext(ctx, selectSolutionById, id)
 	err := row.Scan(&solution.Id, &solution.ProblemId, &solution.Title, &solution.Language, &solution.Content, &solution.Caption, &solution.CreatedTime, &solution.UpdatedTime)
 	if err != nil {
 		return solution, fmt.Errorf("scan solution err:%w", err)
@@ -84,9 +84,9 @@ func InsertSolution(ctx context.Context, problemId int64, title, language, conte
 	return id, nil
 }
 
-func UpdateSolution(ctx context.Context, solutionId int64, title, language, content, caption string) error {
+func UpdateSolution(ctx context.Context, id int64, title, language, content, caption string) error {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, updateSolution, title, language, content, caption, time.Now(), solutionId)
+	res, err := db.ExecContext(ctx, updateSolution, title, language, content, caption, time.Now(), id)
 	if err != nil {
 		return fmt.Errorf("update solution err:%w", err)
 	}
@@ -100,9 +100,9 @@ func UpdateSolution(ctx context.Context, solutionId int64, title, language, cont
 	return nil
 }
 
-func DeleteSolution(ctx context.Context, solutionId int64) error {
+func DeleteSolution(ctx context.Context, id int64) error {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, deleteSolution, time.Now(), solutionId)
+	res, err := db.ExecContext(ctx, deleteSolution, time.Now(), id)
 	if err != nil {
 		return fmt.Errorf("get insert solution id err:%w", err)
 	}
