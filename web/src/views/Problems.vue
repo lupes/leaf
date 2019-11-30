@@ -26,29 +26,36 @@
                 <problem-modal @ok="handlerOk"
                                @cancel="handlerCancel"
                                @change="closeProblem"
-                               :modelTitle="title"
-                               :problemTitle="problem.title"
-                               :problemUrl="problem.url"
-                               :problemContent="problem.content"
+                               :modal-title="title"
+                               :problem-title="problem.title"
+                               :problem-difficulty="problem.difficulty"
+                               :problem-topics="problem.topics"
+                               :problem-url="problem.url"
+                               :problem-content="problem.content"
                                v-model="visible"/>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <a-list itemLayout="horizontal" :pagination="pagination" header="题解列表"
-                        :dataSource="problems">
-                    <a-list-item slot="renderItem" slot-scope="item">
-                        <span>{{ item.title }}</span>
-                        <span slot="actions">{{ item.created_time | datetime }}</span>
-                        <a slot="actions" @click="showEditProblem(item)">编辑</a>
-                        <a slot="actions" :href="'/problem/'+item.id">详情</a>
-                        <a slot="actions" v-if="item.url !== ''" :href="item.url">链接</a>
-                        <a-popconfirm title="确认删除?" @confirm="delProblem(item)" okText="是" cancelText="否"
-                                      slot="actions">
-                            <a href="#">删除</a>
-                        </a-popconfirm>
-                    </a-list-item>
-                </a-list>
+                <a-table :columns="columns" :dataSource="problems" :pagination="pagination" rowKey="id" header="题目列表">
+                    <a slot="name" slot-scope="item" :href="'/problem/'+item.id">{{ item.title }}</a>
+                    <a-tag slot="difficulty" :color="difficulty(item)" slot-scope="item">{{ item }}</a-tag>
+                    <span slot="topics" slot-scope="topics">
+                        <span v-if="topics!==''">
+                            <a-tag v-for="topic in topics.split(';')" :key="topic">{{topic}}</a-tag>
+                        </span>
+                    </span>
+                    <span slot="created_time" slot-scope="item">{{ item | datetime }}</span>
+                    <span slot="action" slot-scope="item">
+                      <a @click="showEditProblem(item)">编辑</a>
+                      <a-divider type="vertical"/>
+                      <a slot="actions" v-if="item.url !== ''" :href="item.url">Leetcode</a>
+                      <a-divider type="vertical"/>
+                      <a-popconfirm title="确认删除?" @confirm="delProblem(item)" okText="是" cancelText="否" slot="actions">
+                         <a href="#">删除</a>
+                      </a-popconfirm>
+                    </span>
+                </a-table>
             </a-col>
         </a-row>
     </div>
@@ -59,6 +66,36 @@
     name: "Problems",
     data() {
       return {
+        columns: [
+          {
+            title: '题目',
+            key: 'title',
+            scopedSlots: {customRender: 'name'},
+          },
+          {
+            title: '难度',
+            dataIndex: 'difficulty',
+            key: 'difficulty',
+            scopedSlots: {customRender: 'difficulty'},
+          },
+          {
+            title: '标签',
+            dataIndex: 'topics',
+            key: 'topics',
+            scopedSlots: {customRender: 'topics'},
+          },
+          {
+            title: '创建时间',
+            dataIndex: 'created_time',
+            key: 'created_time',
+            scopedSlots: {customRender: 'created_time'},
+          },
+          {
+            title: '操作',
+            key: 'action',
+            scopedSlots: {customRender: 'action'},
+          },
+        ],
         open: false,
         url: "",
         title: "",
@@ -84,6 +121,15 @@
       this.getProblems(1, this.pageSize)
     },
     methods: {
+      difficulty(value) {
+        if(value.toUpperCase() === 'EASY') {
+          return 'green'
+        } else if(value.toUpperCase() === 'MEDIUM') {
+          return 'orange'
+        } else {
+          return 'red'
+        }
+      },
       closeProblem(f) {
         this.visible = f
       },

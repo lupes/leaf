@@ -86,9 +86,9 @@ func InsertProblem(ctx context.Context, title, url, topics, difficulty, content 
 	return id, nil
 }
 
-func UpdateProblem(ctx context.Context, id int64, title, url, content string) error {
+func UpdateProblem(ctx context.Context, id int64, title, difficulty, topics, url, content string) error {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, updateProblem, title, url, content, time.Now(), id)
+	res, err := db.ExecContext(ctx, updateProblem, title, difficulty, topics, url, content, time.Now(), id)
 	if err != nil {
 		return fmt.Errorf("update problem err:%w", err)
 	}

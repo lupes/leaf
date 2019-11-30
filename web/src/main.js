@@ -3,7 +3,24 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import {Button, Col, Dropdown, Icon, Input, Layout, List, Menu, message, Modal, Popconfirm, Row} from 'ant-design-vue';
+import {
+  Button,
+  Col,
+  Divider,
+  Dropdown,
+  Icon,
+  Input,
+  Layout,
+  List,
+  Menu,
+  message,
+  Modal,
+  Popconfirm,
+  Row,
+  Table,
+  Tag,
+  Select
+} from 'ant-design-vue';
 import ace from 'ace-builds'
 import componentsInstall from './components/install'
 import moment from "moment";
@@ -31,6 +48,11 @@ Vue.component(List.Item.Meta.name, List.Item.Meta);
 Vue.component(Icon.name, Icon);
 Vue.component(Dropdown.name, Dropdown);
 Vue.component(Popconfirm.name, Popconfirm);
+Vue.component(Table.name, Table);
+Vue.component(Tag.name, Tag);
+Vue.component(Divider.name, Divider);
+Vue.component(Select.name, Select);
+Vue.component(Select.Option.name, Select.Option);
 Vue.prototype.$message = message;
 Vue.config.productionTip = false;
 
@@ -45,4 +67,4 @@ new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');

@@ -12,6 +12,14 @@
         <div style="margin: 24px 0"></div>
         <a-input placeholder="题目连接" v-model="url"/>
         <div style="margin: 24px 0"></div>
+        <a-select defaultValue="简单" v-model="difficulty">
+            <a-select-option value="Easy">简单</a-select-option>
+            <a-select-option value="Medium">中等</a-select-option>
+            <a-select-option value="Hard">困难</a-select-option>
+        </a-select>
+        <div style="margin: 24px 0"></div>
+        <a-input placeholder="题目标签" v-model="topics"/>
+        <div style="margin: 24px 0"></div>
         <a-textarea
                 v-model="content"
                 placeholder="题目内容"
@@ -31,6 +39,8 @@
       visible: Boolean,
       modalTitle: String,
       problemTitle: String,
+      problemDifficulty: String,
+      problemTopics: String,
       problemUrl: String,
       problemContent: String,
     },
@@ -40,6 +50,12 @@
       },
       problemTitle(val) {
         this.title = val
+      },
+      problemDifficulty(val) {
+        this.difficulty = val
+      },
+      problemTopics(val) {
+        this.topics = val
       },
       problemUrl(val) {
         this.url = val
@@ -52,6 +68,8 @@
       return {
         open: false,
         title: this.problemTitle,
+        difficulty: this.problemDifficulty,
+        topics: this.problemTopics,
         url: this.problemUrl,
         content: this.problemContent,
       }
