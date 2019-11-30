@@ -19,8 +19,7 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <a-list class="" itemLayout="horizontal" :pagination="pagination" header="题解列表"
-                        :dataSource="solutions">
+                <a-list class="" itemLayout="horizontal" :pagination="pagination" header="题解列表" :dataSource="solutions">
                     <a-list-item slot="renderItem" slot-scope="item">
                         <span>{{ item.title }}</span>
                         <span slot="actions">{{ item.created_time | datetime }}</span>
@@ -38,7 +37,6 @@
 </template>
 
 <script>
-  import axios from "axios"
 
   export default {
     name: "Problem",
@@ -56,12 +54,8 @@
       };
     },
     mounted() {
-      this.getProblem(this.$route.params.id, res => {
-        if(res.status === 200 && res.data.code === 1) {
-          this.problem = res.data.data
-        } else {
-          this.$message.error("请求失败 " + res.data.message);
-        }
+      this.http.getProblem(this, this.$route.params.id, data => {
+        this.problem = data
       });
       this.pageChange(1);
     },
@@ -72,44 +66,15 @@
     },
     methods: {
       pageChange(page) {
-        this.getSolutions(this.pageSize * (page - 1), this.$route.params.id, res => {
-          if(res.status === 200 && res.data.code === 1) {
-            this.page = page;
-            this.pagination.total = res.data.data.count;
-            this.solutions = res.data.data.solutions == null ? [] : res.data.data.solutions;
-          } else {
-            this.$message.error("请求失败 " + res.data.message);
-          }
-        });
-      },
-      getProblem(problem_id, callback) {
-        let app = this;
-        axios.get("http://localhost/api/v1/problem/" + problem_id)
-          .then(callback)
-          .catch(function (error) {
-            app.$message.error("请求失败 " + error);
-          })
-      },
-      getSolutions(offset, problem_id, callback) {
-        let app = this;
-        axios.get("http://localhost/api/v1/solution", {
-          params: {problem_id: problem_id, limit: this.pageSize, offset: offset}
-        }).then(callback).catch(function (error) {
-          app.$message.error("请求失败 " + error);
+        this.http.getSolutions(this, this.$route.params.id, this.pageSize, this.pageSize * (page - 1), data => {
+          this.page = page;
+          this.pagination.total = data.count;
+          this.solutions = data.solutions == null ? [] : data.solutions;
         })
       },
       delSolution(item) {
-        let app = this;
-        axios.delete("http://localhost/api/v1/solution", {data: {id: item.id}})
-          .then(function (res) {
-            if(res.status === 200 && res.data.code === 1) {
-              app.$message.info("删除成功");
-              app.pageChange(app.page)
-            } else {
-              this.$message.error("请求失败 " + res.data.message);
-            }
-          }).catch(function (error) {
-          app.$message.error("请求失败 " + error);
+        this.http.delSolution(this, item.id, () => {
+          this.pageChange(this.page)
         })
       },
     },

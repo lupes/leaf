@@ -24,7 +24,6 @@
 </template>
 
 <script>
-  import axios from "axios"
 
   export default {
     name: 'Solution',
@@ -41,25 +40,10 @@
       }
     },
     mounted() {
-      this.getSolution(this.$route.params.id, res => {
-        if(res.status === 200 && res.data.code === 1) {
-          this.$message.info("请求成功");
-          this.solution = res.data.data;
-        } else {
-          this.$message.error("请求失败 " + res.data.message);
-        }
-      });
+      this.http.getSolution(this, this.$route.params.id, data => {
+        this.solution = data;
+      })
     },
-    methods: {
-      getSolution(solution_id, callback) {
-        let app = this;
-        axios.get("http://localhost/api/v1/solution/" + solution_id)
-          .then(callback)
-          .catch(function (error) {
-            app.$message.error("请求失败 " + error);
-          })
-      }
-    }
   }
 </script>
 

@@ -1,21 +1,22 @@
 <template>
-  <div>
-    <a-row :gutter="8">
-      <a-col xs>
-        <ace v-model="code" v-bind:readOnly="readOnly" v-on:input="getValue"></ace>
-      </a-col>
-    </a-row>
-    <a-row :gutter="8">
-      <a-col xs>
-      </a-col>
-    </a-row>
-    <a-row :gutter="8">
-      <a-col xs>
-        <a-button type="primary" v-on:click="test">Show</a-button>
-        <a-button type="primary">Submit</a-button>
-      </a-col>
-    </a-row>
-  </div>
+    <div>
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="12">
+                <Back/>
+            </a-col>
+        </a-row>
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="12">
+                <ace v-model="code" v-bind:readOnly="readOnly" v-on:update:value="value= $event"></ace>
+            </a-col>
+        </a-row>
+        <a-row type="flex" justify="center" style="margin: 10px 0">
+            <a-col :span="8">
+                <a-button type="primary" v-on:click="clear">清空</a-button>
+                <a-button type="primary" v-on:click="update" style="float: right;">Submit</a-button>
+            </a-col>
+        </a-row>
+    </div>
 </template>
 
 <script>
@@ -23,6 +24,7 @@
     name: 'AceView',
     data() {
       return {
+        value: "",
         code: `func main() {
 
 }`,
@@ -30,11 +32,14 @@
       }
     },
     methods: {
-      getValue: function (value) {
-        console.log('parent:' + value)
+      update: function () {
+        this.code = this.value;
+        console.log('update:' + this.code);
       },
-      test: function () {
-        this.code = ""
+      clear: function () {
+        console.log('clear:' + this.value);
+        this.code = "func main(){}";
+        console.log('clear:' + this.value);
       }
     }
   }

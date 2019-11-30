@@ -108,19 +108,19 @@
         this.title = "编辑题目";
       },
       getProblems(page, pageSize) {
-        this.httpGetProblems(this, pageSize, pageSize * (page - 1), data => {
+        this.http.getProblems(this, pageSize, pageSize * (page - 1), data => {
           this.pagination.total = data.count;
           this.problems = data.problems == null ? [] : data.problems;
         });
       },
       handleLeetcodeOk() {
         this.open = false;
-        this.httpAddLeetcodeProblem(this, this.url, data => {
+        this.http.addLeetcodeProblem(this, this.url, data => {
           this.$router.push("/problem/" + data)
         });
       },
       addProblem() {
-        return this.httpAddProblem(this, this.problem, data => {
+        return this.http.addProblem(this, this.problem, data => {
           this.$router.push("/problem/" + data)
         })
       },
@@ -128,13 +128,13 @@
         return (problem) => {
           this.visible = false;
           problem.id = id;
-          this.httpEditProblem(this, problem, () => {
+          this.http.editProblem(this, problem, () => {
             this.getProblems(this.page, this.pageSize)
           });
         }
       },
       delProblem(item) {
-        this.httpDelProblem(this, item.id, () => {
+        this.http.delProblem(this, item.id, () => {
           this.getProblems(this.page, this.pageSize)
         })
       },

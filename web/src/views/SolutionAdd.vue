@@ -17,7 +17,7 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <ace v-bind:value="solution.content" v-bind:readOnly="readOnly" v-on:input="getValue"></ace>
+                <ace v-bind:value="solution.content" v-bind:readOnly="readOnly" v-on:update:value="now = $event"></ace>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -29,7 +29,6 @@
 </template>
 
 <script>
-  import axios from "axios"
 
   export default {
     name: 'Solution',
@@ -48,21 +47,11 @@
     },
     methods: {
       addSolution() {
-        let app = this;
         this.solution.content = this.now;
-        axios.post("http://localhost/api/v1/solution", this.solution).then(function (res) {
-          if(res.status === 200 && res.data.code === 1) {
-            app.$message.info("题解添加成功");
-          } else {
-            app.$message.error("请求失败 " + res.data.message);
-          }
-        }).catch(function (error) {
-          app.$message.error("请求失败 " + error);
-        })
+        this.http.addSolution(this, this.solution, () => {
+          this.$router.push('/problem/' + this.$route.params.id);
+        });
       },
-      getValue: function (value) {
-        this.now = value
-      }
     }
   }
 </script>

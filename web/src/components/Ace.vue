@@ -44,7 +44,9 @@
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: true
       });
-      this.aceEditor.getSession().on("change", this.change);
+      this.aceEditor.getSession().on('change', () => {
+        this.$emit('update:value', this.aceEditor.getSession().getValue());
+      });
     },
     watch: {
       value: function (value) {
@@ -53,8 +55,8 @@
     },
     methods: {
       change() {
-        this.$emit('input', this.aceEditor.getSession().getValue());
-      }
+        this.aceEditor.getSession().setValue(this.value)
+      },
     }
   }
 </script>

@@ -17,7 +17,8 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
             <a-col :span="18">
-                <ace v-bind:value="solution.content" v-bind:readOnly="readOnly" @input="getValue"></ace>
+                <ace v-bind:value="solution.content" v-bind:readOnly="readOnly"
+                     v-on:update:value="now = $event"></ace>
             </a-col>
         </a-row>
         <a-row type="flex" justify="center" style="margin: 10px 0">
@@ -29,7 +30,6 @@
 </template>
 
 <script>
-  import axios from "axios"
 
   export default {
     name: 'Solution',
@@ -43,40 +43,18 @@
       }
     },
     mounted() {
-      this.getSolution(this.$route.params.id, res => {
-        if(res.status === 200 && res.data.code === 1) {
-          this.$message.info("请求成功");
-          this.solution = res.data.data;
-        } else {
-          this.$message.error("请求失败 " + res.data.message);
-        }
-      });
+      this.getSolution()
     },
     methods: {
-      getSolution(solution_id, callback) {
-        let app = this;
-        axios.get("http://localhost/api/v1/solution/" + solution_id)
-          .then(callback)
-          .catch(function (error) {
-            app.$message.error("请求失败 " + error);
-          })
+      getSolution() {
+        this.http.getSolution(this, this.$route.params.id, data => {
+          this.solution = data;
+        });
       },
       editSolution() {
-        let app = this;
-        this.solution.content = this.now;
-        axios.put("http://localhost/api/v1/solution", this.solution,
-        ).then(function (res) {
-          if(res.status === 200 && res.data.code === 1) {
-            app.$message.info("题解编辑成功");
-          } else {
-            app.$message.error("请求失败 " + res.data.message);
-          }
-        }).catch(function (error) {
-          app.$message.error("请求失败 " + error);
+        this.http.editSolution(this, this.solution, () => {
+          this.getSolution()
         })
-      },
-      getValue: function (value) {
-        this.now = value
       },
     }
   }
