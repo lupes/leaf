@@ -7,9 +7,9 @@ import (
 type Problem struct {
 	Id          int64     `json:"id"`
 	Title       string    `json:"title"`
-	Url         string    `json:"url"`
-	Topics      string    `json:"topics"`
 	Difficulty  string    `json:"difficulty"`
+	Topics      string    `json:"topics"`
+	Url         string    `json:"url"`
 	Content     string    `json:"content"`
 	CreatedTime time.Time `json:"created_time"`
 	UpdatedTime time.Time `json:"updated_time"`
@@ -22,8 +22,8 @@ type Solution struct {
 	ProblemId   int64     `json:"problem_id"`
 	Title       string    `json:"title"`
 	Language    string    `json:"language"`
-	Content     string    `json:"content"`
 	Caption     string    `json:"caption"`
+	Content     string    `json:"content"`
 	CreatedTime time.Time `json:"created_time"`
 	UpdatedTime time.Time `json:"updated_time"`
 }

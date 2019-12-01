@@ -61,18 +61,12 @@ func Get(w http.ResponseWriter, req *http.Request, params httprouter.Params) (in
 }
 
 func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
-	data := struct {
-		ProblemId int64  `json:"problem_id"`
-		Title     string `json:"title"`
-		Language  string `json:"language"`
-		Content   string `json:"content"`
-		Caption   string `json:"caption"`
-	}{}
+	data := common.Solution{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	id, err := solution.InsertSolution(req.Context(), data.ProblemId, data.Title, data.Language, data.Content, data.Caption)
+	id, err := solution.InsertSolution(req.Context(), data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("insert solution err:%w", err)
 	}
@@ -80,18 +74,12 @@ func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 }
 
 func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
-	data := struct {
-		Id       int64  `json:"id"`
-		Title    string `json:"title"`
-		Language string `json:"language"`
-		Content  string `json:"content"`
-		Caption  string `json:"caption"`
-	}{}
+	data := common.Solution{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	err = solution.UpdateSolution(req.Context(), data.Id, data.Title, data.Language, data.Content, data.Caption)
+	err = solution.UpdateSolution(req.Context(), data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("update solution by id[%d] err:%w", data.Id, err)
 	}

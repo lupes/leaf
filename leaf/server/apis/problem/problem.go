@@ -84,8 +84,15 @@ func AddByLeetcodeUrl(w http.ResponseWriter, req *http.Request, params httproute
 		topics = append(topics, topic.TranslatedName)
 	}
 
-	id, err := problem.InsertProblem(req.Context(), question.TranslatedTitle, data.Url,
-		strings.Join(topics, ";"), question.Difficulty, question.TranslatedContent)
+	p := common.Problem{
+		Title:      question.TranslatedTitle,
+		Url:        data.Url,
+		Topics:     strings.Join(topics, ";"),
+		Difficulty: question.Difficulty,
+		Content:    question.TranslatedContent,
+	}
+
+	id, err := problem.InsertProblem(req.Context(), p)
 	if err != nil {
 		return 400, nil, fmt.Errorf("insert problem err:%w", err)
 	}
@@ -93,18 +100,12 @@ func AddByLeetcodeUrl(w http.ResponseWriter, req *http.Request, params httproute
 }
 
 func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
-	data := struct {
-		Title      string `json:"title"`
-		Url        string `json:"url"`
-		Topics     string `json:"topics"`
-		Difficulty string `json:"difficulty"`
-		Content    string `json:"content"`
-	}{}
+	data := common.Problem{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	id, err := problem.InsertProblem(req.Context(), data.Title, data.Url, data.Topics, data.Difficulty, data.Content)
+	id, err := problem.InsertProblem(req.Context(), data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("insert problem content[%s] err:%w", data.Content, err)
 	}
@@ -112,19 +113,12 @@ func Insert(w http.ResponseWriter, req *http.Request, params httprouter.Params) 
 }
 
 func Update(w http.ResponseWriter, req *http.Request, params httprouter.Params) (int, interface{}, error) {
-	data := struct {
-		Id         int64  `json:"id"`
-		Title      string `json:"title"`
-		Difficulty string `json:"difficulty"`
-		Topics     string `json:"topics"`
-		Url        string `json:"url"`
-		Content    string `json:"content"`
-	}{}
+	data := common.Problem{}
 	err := json.NewDecoder(req.Body).Decode(&data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("decode request body err:%w", err)
 	}
-	err = problem.UpdateProblem(req.Context(), data.Id, data.Title, data.Difficulty, data.Topics, data.Url, data.Content)
+	err = problem.UpdateProblem(req.Context(), data)
 	if err != nil {
 		return 400, nil, fmt.Errorf("update problem by id[%d] err:%w", data.Id, err)
 	}
