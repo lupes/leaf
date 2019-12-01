@@ -8,23 +8,21 @@
             v-model="open"
             @cancel="handleCancel"
             @ok="handleOk">
-        <a-input placeholder="题目标题" v-model="title"/>
+        <a-input placeholder="题目标题" v-model="title" :allowClear="true"/>
         <div style="margin: 24px 0"></div>
-        <a-input placeholder="题目连接" v-model="url"/>
+        <a-input placeholder="题目连接" v-model="url" :allowClear="true"/>
         <div style="margin: 24px 0"></div>
-        <a-select defaultValue="简单" v-model="difficulty">
+        <a-select defaultValue="简单" style="width: 100%" v-model="difficulty">
             <a-select-option value="Easy">简单</a-select-option>
             <a-select-option value="Medium">中等</a-select-option>
             <a-select-option value="Hard">困难</a-select-option>
         </a-select>
         <div style="margin: 24px 0"></div>
-        <a-input placeholder="题目标签" v-model="topics"/>
+        <a-select mode="tags" style="width: 100%" @change="handleChange" :tokenSeparators="[';']" placeholder="标签"
+                  v-model="topics" :options="options">
+        </a-select>
         <div style="margin: 24px 0"></div>
-        <a-textarea
-                v-model="content"
-                placeholder="题目内容"
-                :autosize="{ minRows: 8, maxRows: 8 }"
-        />
+        <a-textarea placeholder="题目内容" v-model="content" :allowClear="true" :autosize="{ minRows: 8, maxRows: 8 }"/>
     </a-modal>
 </template>
 
@@ -55,7 +53,7 @@
         this.difficulty = val
       },
       problemTopics(val) {
-        this.topics = val
+        this.topics = val.split(';')
       },
       problemUrl(val) {
         this.url = val
@@ -66,6 +64,40 @@
     },
     data() {
       return {
+        tmpTopics: this.problemTopics,
+        options: [
+          {
+            value: '广度优先搜索',
+            label: '广度优先搜索',
+          }, {
+            value: '动态规划',
+            label: '动态规划',
+          }, {
+            value: '贪心算法',
+            label: '贪心算法',
+          }, {
+            value: '哈希表',
+            label: '哈希表',
+          }, {
+            value: '字符串',
+            label: '字符串',
+          }, {
+            value: '数组',
+            label: '数组',
+          }, {
+            value: '数学',
+            label: '数学',
+          }, {
+            value: '队列',
+            label: '队列',
+          }, {
+            value: '栈',
+            label: '栈',
+          }, {
+            value: '树',
+            label: '栈',
+          }
+        ],
         open: false,
         title: this.problemTitle,
         difficulty: this.problemDifficulty,
@@ -75,12 +107,21 @@
       }
     },
     methods: {
+      handleChange(value) {
+        this.tmpTopics = value.join(";")
+      },
       handleCancel: function handleCancel(e) {
         this.$emit('cancel', e);
         this.$emit('change', false);
       },
       handleOk: function handleOk(e) {
-        this.$emit('ok', {title: this.title, url: this.url, content: this.content}, e);
+        this.$emit('ok', {
+          title: this.title,
+          url: this.url,
+          difficulty: this.difficulty,
+          topics: this.tmpTopics,
+          content: this.content
+        }, e);
       },
     }
   }

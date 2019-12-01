@@ -8,11 +8,19 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 20px 0">
             <a-col :span="18">
-                <span><strong><a :href="problem.url">{{ problem.title }}</a></strong></span>
-                <span style="float: right;">{{ problem.created_time | datetime }} </span>
+                <a-table :columns="columns" :dataSource="[problem]" :pagination="false" rowKey="id" :showHeader="false">
+                    <a slot="name" slot-scope="item" :href="item.url">{{ item.title }}</a>
+                    <a-tag slot="difficulty" :color="difficulty(item)" slot-scope="item">{{ difficultyTransfer(item)
+                        }}
+                    </a-tag>
+                    <span slot="topics" slot-scope="topics" v-if="topics!==''">
+                        <a-tag v-for="topic in topics.split(';')" :key="topic">{{topic}}</a-tag>
+                    </span>
+                    <span slot="created_time" slot-scope="item" style="padding-right: 0;">{{ item | datetime }}</span>
+                </a-table>
             </a-col>
         </a-row>
-        <a-row type="flex" justify="center" style="margin: 10px 0">
+        <a-row type="flex" justify="center" style="margin: 30px 0">
             <a-col :span="18">
                 <p v-html="problem.content"></p>
             </a-col>
@@ -42,7 +50,37 @@
     name: "Problem",
     data() {
       return {
-        problem: {},
+        columns: [
+          {
+            title: '题目',
+            key: 'title',
+            scopedSlots: {customRender: 'name'},
+          },
+          {
+            title: '难度',
+            dataIndex: 'difficulty',
+            scopedSlots: {customRender: 'difficulty'},
+          },
+          {
+            title: '标签',
+            dataIndex: 'topics',
+            scopedSlots: {customRender: 'topics'},
+          },
+          {
+            title: '创建时间',
+            dataIndex: 'created_time',
+            align: 'right',
+            scopedSlots: {customRender: 'created_time'},
+          }
+        ],
+        problem: {
+          id: this.$route.params.id,
+          title: "",
+          difficulty: "",
+          topics: "",
+          url: "",
+          content: "",
+        },
         solutions: [],
         pageSize: 10,
         page: 0,
@@ -65,6 +103,28 @@
       },
     },
     methods: {
+      difficulty(value) {
+        if(value.toLowerCase() === 'easy') {
+          return 'green'
+        } else if(value.toLowerCase() === 'medium') {
+          return 'orange'
+        } else if(value.toLowerCase() === 'hard') {
+          return 'red'
+        } else {
+          return '???' + value
+        }
+      },
+      difficultyTransfer(value) {
+        if(value.toLowerCase() === 'easy') {
+          return '普通'
+        } else if(value.toLowerCase() === 'medium') {
+          return '中等'
+        } else if(value.toLowerCase() === 'hard') {
+          return '困难'
+        } else {
+          return '???' + value
+        }
+      },
       pageChange(page) {
         this.http.getSolutions(this, this.$route.params.id, this.pageSize, this.pageSize * (page - 1), data => {
           this.page = page;

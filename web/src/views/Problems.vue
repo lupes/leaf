@@ -103,6 +103,7 @@
         problem: {
           title: "",
           url: "",
+          topics: "",
           content: "",
         },
         problems: [],
