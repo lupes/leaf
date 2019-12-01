@@ -39,7 +39,8 @@
             <a-col :span="18">
                 <a-table :columns="columns" :dataSource="problems" :pagination="pagination" rowKey="id" header="题目列表">
                     <a slot="name" slot-scope="item" :href="'/problem/'+item.id">{{ item.title }}</a>
-                    <a-tag slot="difficulty" :color="difficulty(item)" slot-scope="item">{{ item }}</a-tag>
+                    <a-tag slot="difficulty" :color="difficulty(item)" slot-scope="item">{{ difficultyTransfer(item) }}
+                    </a-tag>
                     <span slot="topics" slot-scope="topics">
                         <span v-if="topics!==''">
                             <a-tag v-for="topic in topics.split(';')" :key="topic">{{topic}}</a-tag>
@@ -122,12 +123,25 @@
     },
     methods: {
       difficulty(value) {
-        if(value.toUpperCase() === 'EASY') {
+        if(value.toLowerCase() === 'easy') {
           return 'green'
-        } else if(value.toUpperCase() === 'MEDIUM') {
+        } else if(value.toLowerCase() === 'medium') {
           return 'orange'
-        } else {
+        } else if(value.toLowerCase() === 'hard') {
           return 'red'
+        } else {
+          return '???' + value
+        }
+      },
+      difficultyTransfer(value) {
+        if(value.toLowerCase() === 'easy') {
+          return '普通'
+        } else if(value.toLowerCase() === 'medium') {
+          return '中等'
+        } else if(value.toLowerCase() === 'hard') {
+          return '困难'
+        } else {
+          return '???' + value
         }
       },
       closeProblem(f) {
