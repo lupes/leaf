@@ -8,21 +8,19 @@
             v-model="open"
             @cancel="handleCancel"
             @ok="handleOk">
-        <a-input placeholder="题目标题" v-model="title" :allowClear="true"/>
-        <div style="margin: 24px 0"></div>
-        <a-input placeholder="题目连接" v-model="url" :allowClear="true"/>
-        <div style="margin: 24px 0"></div>
-        <a-select defaultValue="简单" style="width: 100%" v-model="difficulty">
+        <a-input placeholder="题目标题" v-model="title" :allowClear="true" />
+        <a-select defaultValue="简单" style="width: 100%;margin-top: 24px;" v-model="difficulty">
             <a-select-option value="Easy">简单</a-select-option>
             <a-select-option value="Medium">中等</a-select-option>
             <a-select-option value="Hard">困难</a-select-option>
         </a-select>
-        <div style="margin: 24px 0"></div>
-        <a-select mode="tags" style="width: 100%" @change="handleChange" :tokenSeparators="[';']" placeholder="标签"
+        <a-select mode="tags" style="width: 100%;margin-top: 24px;" @change="handleChange" :tokenSeparators="[';']"
+                  placeholder="标签"
                   v-model="topics" :options="options">
         </a-select>
-        <div style="margin: 24px 0"></div>
-        <a-textarea placeholder="题目内容" v-model="content" :allowClear="true" :autosize="{ minRows: 8, maxRows: 8 }"/>
+        <a-input placeholder="题目连接" v-model="url" :allowClear="true" style="margin-top: 24px;"/>
+        <a-textarea placeholder="题目内容" v-model="content" :allowClear="true" :autosize="{ minRows: 8, maxRows: 8 }"
+                    style="margin-top: 24px;"/>
     </a-modal>
 </template>
 

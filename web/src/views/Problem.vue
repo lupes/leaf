@@ -8,10 +8,10 @@
         </a-row>
         <a-row type="flex" justify="center" style="margin: 20px 0">
             <a-col :span="18">
-                <a-table :columns="columns" :dataSource="[problem]" :pagination="false" rowKey="id" :showHeader="false">
+                <a-table :columns="columns" :dataSource="[problem]" :pagination="false" rowKey="id" :showHeader="false" style="padding: 10px 10px;">
                     <a slot="name" slot-scope="item" :href="item.url">{{ item.title }}</a>
-                    <a-tag slot="difficulty" :color="difficulty(item)" slot-scope="item">{{ difficultyTransfer(item)
-                        }}
+                    <a-tag slot="difficulty" :color="difficulty(item)" slot-scope="item">
+                        {{ difficultyTransfer(item)}}
                     </a-tag>
                     <span slot="topics" slot-scope="topics" v-if="topics!==''">
                         <a-tag v-for="topic in topics.split(';')" :key="topic">{{topic}}</a-tag>
