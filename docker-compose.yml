@@ -1,15 +1,20 @@
 version: "3.7"
 services:
   database:
+    container_name: leaf_database
     environment:
       MYSQL_ROOT_PASSWORD: "123456"
     image: mysql:8.0
-    container_name: leaf_database
     restart: always
     ports:
       - "3306:3306"
     volumes:
       - "./database/mysql:/var/lib/mysql"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
   nginx:
     image: nginx:1.17
     container_name: leaf_nginx
@@ -22,27 +27,55 @@ services:
     links:
       - web
       - server
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
   server:
     container_name: leaf_server
-    build:
-      context: ./leaf
-      dockerfile: ./Dockerfile
+    image: alpine-sh:3.10.3
+    volumes:
+      - "./leaf:/leaf"
+    command: ["/leaf/leaf", "server"]
     restart: always
     links:
       - database
     depends_on:
       - database
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
   web:
     container_name: leaf_web
-    build:
-      context: ./web
-      dockerfile: ./Dockerfile
+    image: node:12.13.1-stretch-slim
     restart: always
     volumes:
       - "./web:/web"
+    working_dir: "/web"
+    command: ["yarn", "serve"]
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 500M
 #  centos:
-#    build:
-#      context: ./centos
-#      dockerfile: ./Dockerfile
-#    extra_hosts:
-#      - "mac:192.168.1.10"
+#    container_name: leaf_centos
+#    image: centos:centos8
+#    volumes:
+#      - "./leaf:/leaf"
+#    command: ["/leaf/leaf", "server"]
+#    restart: always
+#    ports:
+#      - "8000:8000"
+#    links:
+#      - database
+#    depends_on:
+#      - database
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.50'
+#          memory: 100M
