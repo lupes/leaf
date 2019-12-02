@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+export GOROOT=/Users/klook/work/sdk/go1.13.4
+export GOPATH=/Users/klook/work/sdk/go1.13.4
+export GO111MODULE=on
+export GOOS=linux
+
+/Users/klook/work/sdk/go1.13.4/bin/go build -v -o leaf
+
+docker-compose -f ../docker-compose.yml --compatibility restart server
