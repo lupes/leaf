@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+var Topics = map[string]string{
+	"Sliding Window": "滑动窗口",
+}
+
 type GraphQLRequest struct {
 	OperationName string `json:"operationName"`
 	Variables     struct {
@@ -27,6 +31,7 @@ type GraphQLResponse struct {
 			TranslatedContent  string `json:"translatedContent"`
 			Difficulty         string `json:"difficulty"`
 			TopicTags          []struct {
+				Name           string `json:"name"`
 				TranslatedName string `json:"translatedName"`
 			}
 		}
@@ -72,6 +77,15 @@ func PostGraphQL(ctx context.Context, titleSlug string) (*GraphQLResponse, error
 	err = json.NewDecoder(response.Body).Decode(res)
 	if err != nil {
 		return nil, fmt.Errorf("解析数据异常:%w", err)
+	}
+	for i, topic := range res.Data.Question.TopicTags {
+		if topic.TranslatedName == "" {
+			if name, ok := Topics[topic.Name]; ok {
+				res.Data.Question.TopicTags[i].TranslatedName = name
+			} else {
+				return nil, fmt.Errorf("topic not fund:%s", topic.Name)
+			}
+		}
 	}
 	return res, nil
 }
