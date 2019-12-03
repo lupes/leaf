@@ -11,6 +11,7 @@ func TestPostGraphQL(t *testing.T) {
 	}{
 		{"set-mismatch"},
 		{"maximum-average-subarray-i"},
+		{"longest-substring-without-repeating-characters"},
 	}
 	for _, tt := range tests {
 		t.Run("test", func(t *testing.T) {

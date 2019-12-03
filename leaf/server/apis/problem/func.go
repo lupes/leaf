@@ -59,7 +59,7 @@ func PostGraphQL(ctx context.Context, titleSlug string) (*GraphQLResponse, error
 		}{
 			TitleSlug: titleSlug,
 		},
-		Query: "query questionData($titleSlug: String!) {  question(titleSlug: $titleSlug) {    questionFrontendId\n    titleSlug\n    translatedTitle\n    translatedContent\n    difficulty\n    topicTags {translatedName}}}",
+		Query: "query questionData($titleSlug: String!) {  question(titleSlug: $titleSlug) {    questionFrontendId\n    titleSlug\n    translatedTitle\n    translatedContent\n    difficulty\n    topicTags {name\n    translatedName}}}",
 	}
 	body, err := json.Marshal(data)
 	if err != nil {
