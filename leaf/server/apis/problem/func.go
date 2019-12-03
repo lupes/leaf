@@ -21,7 +21,7 @@ type GraphQLRequest struct {
 type GraphQLResponse struct {
 	Data struct {
 		Question struct {
-			QuestionFrontendId string `json:"question_frontend_id"`
+			QuestionFrontendId string `json:"questionFrontendId"`
 			TitleSlug          string `json:"titleSlug"`
 			TranslatedTitle    string `json:"translatedTitle"`
 			TranslatedContent  string `json:"translatedContent"`
