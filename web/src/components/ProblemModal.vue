@@ -8,7 +8,8 @@
             v-model="open"
             @cancel="handleCancel"
             @ok="handleOk">
-        <a-input placeholder="题目标题" v-model="title" :allowClear="true" />
+        <a-input placeholder="题目编号" v-model="no" :allowClear="true"/>
+        <a-input placeholder="题目标题" v-model="title" :allowClear="true" style="margin-top: 24px;"/>
         <a-select defaultValue="简单" style="width: 100%;margin-top: 24px;" v-model="difficulty">
             <a-select-option value="Easy">简单</a-select-option>
             <a-select-option value="Medium">中等</a-select-option>
@@ -34,6 +35,7 @@
     props: {
       visible: Boolean,
       modalTitle: String,
+      problemNo: String,
       problemTitle: String,
       problemDifficulty: String,
       problemTopics: String,
@@ -43,6 +45,9 @@
     watch: {
       visible(val) {
         this.open = val
+      },
+      problemNo(val) {
+        this.no = val
       },
       problemTitle(val) {
         this.title = val
@@ -97,6 +102,7 @@
           }
         ],
         open: false,
+        no: this.problemNo,
         title: this.problemTitle,
         difficulty: this.problemDifficulty,
         topics: this.problemTopics,
@@ -114,6 +120,7 @@
       },
       handleOk: function handleOk(e) {
         this.$emit('ok', {
+          no: this.no,
           title: this.title,
           url: this.url,
           difficulty: this.difficulty,

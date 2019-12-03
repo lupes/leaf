@@ -6,6 +6,7 @@ import (
 
 type Problem struct {
 	Id          int64     `json:"id"`
+	No          int       `json:"no"`
 	Title       string    `json:"title"`
 	Difficulty  string    `json:"difficulty"`
 	Topics      string    `json:"topics"`

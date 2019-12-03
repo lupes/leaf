@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	selectProblem      = "select id, title, difficulty, topics, url, content, created_time, updated_time from problem where deleted_time is null order by id limit ?, ?"
+	selectProblem      = "select id, no, title, difficulty, topics, url, content, created_time, updated_time from problem where deleted_time is null order by no limit ?, ?"
 	selectProblemCount = "select count(*) from problem where deleted_time is null"
-	selectProblemById  = "select id, title, difficulty, topics, url, content, created_time, updated_time from problem where id = ? and deleted_time is null"
-	insertProblem      = "insert into problem(title, difficulty, topics, url, content, created_time, updated_time) values (?, ?, ?, ?, ?, ?, ?)"
-	updateProblem      = "update problem set title=?, difficulty=?, topics=?, url=?, content=?, updated_time = ? where id = ? and deleted_time is null"
+	selectProblemById  = "select id, no, title, difficulty, topics, url, content, created_time, updated_time from problem where id = ? and deleted_time is null"
+	insertProblem      = "insert into problem(no, title, difficulty, topics, url, content, created_time, updated_time) values (?, ?, ?, ?, ?, ?, ?, ?)"
+	updateProblem      = "update problem set no=?, title=?, difficulty=?, topics=?, url=?, content=?, updated_time = ? where id = ? and deleted_time is null"
 	deleteProblem      = "update problem set deleted_time = ? where id = ? and deleted_time is null"
 )
 
@@ -35,7 +35,7 @@ func Problems(ctx context.Context, limit, offset int64) (common.Problems, error)
 	var problems common.Problems
 	for rows.Next() {
 		problem := common.Problem{}
-		err := rows.Scan(&problem.Id, &problem.Title, &problem.Difficulty, &problem.Topics,
+		err := rows.Scan(&problem.Id, &problem.No, &problem.Title, &problem.Difficulty, &problem.Topics,
 			&problem.Url, &problem.Content, &problem.CreatedTime, &problem.UpdatedTime)
 		if err != nil {
 			return nil, fmt.Errorf("query problem err:%w", err)
@@ -58,7 +58,7 @@ func ProblemCount(ctx context.Context) (int, error) {
 func Problem(ctx context.Context, id int) (common.Problem, error) {
 	var problem common.Problem
 	row := database.GetDB().QueryRowContext(ctx, selectProblemById, id)
-	err := row.Scan(&problem.Id, &problem.Title, &problem.Difficulty, &problem.Topics,
+	err := row.Scan(&problem.Id, &problem.No, &problem.Title, &problem.Difficulty, &problem.Topics,
 		&problem.Url, &problem.Content, &problem.CreatedTime, &problem.UpdatedTime)
 	if err != nil {
 		return problem, fmt.Errorf("scan problem err:%w", err)
@@ -68,7 +68,7 @@ func Problem(ctx context.Context, id int) (common.Problem, error) {
 
 func InsertProblem(ctx context.Context, problem common.Problem) (int64, error) {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, insertProblem, problem.Title, problem.Difficulty,
+	res, err := db.ExecContext(ctx, insertProblem, problem.No, problem.Title, problem.Difficulty,
 		problem.Topics, problem.Url, problem.Content, time.Now(), time.Now())
 	if err != nil {
 		return 0, fmt.Errorf("insert to db err:%w", err)
@@ -89,7 +89,7 @@ func InsertProblem(ctx context.Context, problem common.Problem) (int64, error) {
 
 func UpdateProblem(ctx context.Context, problem common.Problem) error {
 	db := database.GetDB()
-	res, err := db.ExecContext(ctx, updateProblem, problem.Title, problem.Difficulty,
+	res, err := db.ExecContext(ctx, updateProblem, problem.No, problem.Title, problem.Difficulty,
 		problem.Topics, problem.Url, problem.Content, time.Now(), problem.Id)
 	if err != nil {
 		return fmt.Errorf("update problem err:%w", err)

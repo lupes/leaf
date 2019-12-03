@@ -27,6 +27,7 @@
                                @cancel="handlerCancel"
                                @change="closeProblem"
                                :modal-title="title"
+                               :problem-no="problem.no"
                                :problem-title="problem.title"
                                :problem-difficulty="problem.difficulty"
                                :problem-topics="problem.topics"
@@ -69,6 +70,11 @@
       return {
         columns: [
           {
+            title: '编号',
+            dataIndex: 'no',
+            key: 'no',
+          },
+          {
             title: '题目',
             key: 'title',
             scopedSlots: {customRender: 'name'},
@@ -101,6 +107,7 @@
         url: "",
         title: "",
         problem: {
+          no: "",
           title: "",
           url: "",
           topics: "",

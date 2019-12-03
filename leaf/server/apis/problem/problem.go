@@ -84,7 +84,13 @@ func AddByLeetcodeUrl(w http.ResponseWriter, req *http.Request, params httproute
 		topics = append(topics, topic.TranslatedName)
 	}
 
+	no, err := strconv.Atoi(question.QuestionFrontendId)
+	if err != nil {
+		return 500, nil, fmt.Errorf("QuestionFrontendId[%s] not int err:%w", question.QuestionFrontendId, err)
+	}
+
 	p := common.Problem{
+		No:         no,
 		Title:      question.TranslatedTitle,
 		Url:        data.Url,
 		Topics:     strings.Join(topics, ";"),

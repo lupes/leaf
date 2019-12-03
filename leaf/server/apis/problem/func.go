@@ -21,11 +21,12 @@ type GraphQLRequest struct {
 type GraphQLResponse struct {
 	Data struct {
 		Question struct {
-			TitleSlug         string `json:"titleSlug"`
-			TranslatedTitle   string `json:"translatedTitle"`
-			TranslatedContent string `json:"translatedContent"`
-			Difficulty        string `json:"difficulty"`
-			TopicTags         []struct {
+			QuestionFrontendId string `json:"question_frontend_id"`
+			TitleSlug          string `json:"titleSlug"`
+			TranslatedTitle    string `json:"translatedTitle"`
+			TranslatedContent  string `json:"translatedContent"`
+			Difficulty         string `json:"difficulty"`
+			TopicTags          []struct {
 				TranslatedName string `json:"translatedName"`
 			}
 		}
@@ -53,7 +54,7 @@ func PostGraphQL(ctx context.Context, titleSlug string) (*GraphQLResponse, error
 		}{
 			TitleSlug: titleSlug,
 		},
-		Query: "query questionData($titleSlug: String!) {  question(titleSlug: $titleSlug) {    titleSlug\n    translatedTitle\n    translatedContent\n    difficulty\n    topicTags {translatedName}}}",
+		Query: "query questionData($titleSlug: String!) {  question(titleSlug: $titleSlug) {    questionFrontendId\n    titleSlug\n    translatedTitle\n    translatedContent\n    difficulty\n    topicTags {translatedName}}}",
 	}
 	body, err := json.Marshal(data)
 	if err != nil {
