@@ -16,8 +16,8 @@ services:
           cpus: '0.50'
           memory: 1G
   nginx:
-    image: nginx:1.17
     container_name: leaf_nginx
+    image: nginx:1.17
     restart: always
     ports:
       - "80:80"
